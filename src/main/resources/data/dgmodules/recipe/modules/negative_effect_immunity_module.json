@@ -1,0 +1,62 @@
+{
+  "type": "draconicevolution:fusion_crafting",
+  "catalyst": {
+    "item": "draconicevolution:awakened_core"
+  },
+  "ingredients": [
+    {
+      "consume": true,
+      "ingredient": {
+        "tag": "c:ingots/draconium_awakened"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "tag": "c:ingots/draconium_awakened"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "tag": "c:ingots/draconium_awakened"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "tag": "c:ingots/draconium_awakened"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:draconic_energy_core"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:dragon_heart"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "minecraft:nether_star"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "minecraft:milk_bucket"
+      }
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "dgmodules:negative_effect_immunity_module"
+  },
+  "techLevel": "draconic",
+  "totalEnergy": 51200000
+}

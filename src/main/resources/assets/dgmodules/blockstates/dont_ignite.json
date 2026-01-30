@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "lit=false": {
+      "model": "dgmodules:block/dont_ignite"
+    },
+    "lit=true": {
+      "model": "dgmodules:block/dont_ignite_lit"
+    }
+  }
+}

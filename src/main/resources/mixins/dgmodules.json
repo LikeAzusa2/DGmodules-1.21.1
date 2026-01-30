@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "package": "com.likeazusa2.dgmodules.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "MixinChaoticStaffHost",
+    "MixinShieldControlEntity",
+    "MixinModuleEntityHostAccess",
+
+    "phase.MixinPhaseShieldHurt",
+    "phase.MixinPhaseShieldBlockDamageLeftClickItem",
+    "phase.MixinPhaseShieldPickable"
+  ],
+  "client": ["client.MixinModularChestpieceModelRenderContext"],
+  "server": []
+}

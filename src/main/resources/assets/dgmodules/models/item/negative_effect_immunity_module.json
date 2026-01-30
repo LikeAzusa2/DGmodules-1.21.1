@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "dgmodules:item/negative_effect_immunity_module"
+  }
+}

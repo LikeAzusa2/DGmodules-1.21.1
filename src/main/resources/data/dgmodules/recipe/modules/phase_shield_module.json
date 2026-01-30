@@ -1,0 +1,62 @@
+{
+  "type": "draconicevolution:fusion_crafting",
+  "catalyst": {
+    "item": "draconicevolution:reactor_core"
+  },
+  "ingredients": [
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:chaotic_core"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:chaotic_core"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:chaotic_energy_core"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:chaotic_energy_core"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:item_chaotic_shield_control"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "dgmodules:shield_control_booster_module"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:item_chaotic_undying"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "tag": "c:ingots/draconium_awakened"
+      }
+    }
+  ],
+  "result": {
+    "id": "dgmodules:phase_shield_module",
+    "count": 1
+  },
+  "techLevel": "chaotic",
+  "totalEnergy": 20000000000
+}

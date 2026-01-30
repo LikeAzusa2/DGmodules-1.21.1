@@ -1,0 +1,110 @@
+{
+  "type": "draconicevolution:fusion_crafting",
+  "catalyst": {
+    "item": "draconicevolution:item_chaotic_damage"
+  },
+  "ingredients": [
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:chaotic_core"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:chaotic_core"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:chaotic_energy_core"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:chaotic_energy_core"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:large_chaos_frag"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:large_chaos_frag"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:item_chaotic_damage"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:item_chaotic_damage"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:item_chaotic_large_shield_capacity"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:item_chaotic_large_shield_capacity"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:chaotic_core"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:chaotic_core"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:awakened_draconium_ingot"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:awakened_draconium_ingot"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:wyvern_energy_core"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:draconic_energy_core"
+      }
+    }
+  ],
+  "result": {
+    "id": "dgmodules:chaos_laser_module",
+    "count": 1
+  },
+  "techLevel": "chaotic",
+  "totalEnergy": 6000000000
+}

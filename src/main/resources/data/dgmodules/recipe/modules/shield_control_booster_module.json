@@ -1,0 +1,46 @@
+{
+  "type": "draconicevolution:fusion_crafting",
+  "catalyst": {
+    "item": "draconicevolution:item_chaotic_shield_control"
+  },
+  "ingredients": [
+    {
+      "consume": true,
+      "ingredient": { "item": "draconicevolution:chaotic_core" }
+    },
+    {
+      "consume": true,
+      "ingredient": { "item": "draconicevolution:chaotic_core" }
+    },
+    {
+      "consume": true,
+      "ingredient": { "item": "draconicevolution:chaotic_energy_core" }
+    },
+    {
+      "consume": true,
+      "ingredient": { "item": "draconicevolution:chaotic_energy_core" }
+    },
+    {
+      "consume": true,
+      "ingredient": { "item": "draconicevolution:large_chaos_frag" }
+    },
+    {
+      "consume": true,
+      "ingredient": { "item": "draconicevolution:large_chaos_frag" }
+    },
+    {
+      "consume": true,
+      "ingredient": { "item": "draconicevolution:dragon_heart" }
+    },
+    {
+      "consume": true,
+      "ingredient": { "item": "minecraft:nether_star" }
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "dgmodules:shield_control_booster_module"
+  },
+  "techLevel": "chaotic",
+  "totalEnergy": 1000000000
+}

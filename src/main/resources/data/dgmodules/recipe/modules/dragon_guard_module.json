@@ -1,0 +1,110 @@
+{
+  "type": "draconicevolution:fusion_crafting",
+  "catalyst": {
+    "item": "draconicevolution:item_chaotic_undying"
+  },
+  "ingredients": [
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "minecraft:nether_star"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "minecraft:enchanted_golden_apple"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:chaotic_core"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:chaotic_core"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:large_chaos_frag"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:large_chaos_frag"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:chaotic_energy_core"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:chaotic_energy_core"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:item_chaotic_large_shield_capacity"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:item_chaotic_large_shield_capacity"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:item_chaotic_damage"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:item_chaotic_damage"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:item_chaotic_undying"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:item_chaotic_undying"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "tag": "c:ingots/draconium_awakened"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "tag": "c:ingots/draconium_awakened"
+      }
+    }
+  ],
+  "result": {
+    "id": "dgmodules:dragon_guard_module",
+    "count": 1
+  },
+  "techLevel": "chaotic",
+  "totalEnergy": 10000000000
+}

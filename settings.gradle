@@ -1,0 +1,27 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        mavenCentral()
+        maven { url = "https://maven.neoforged.net/releases" }
+    }
+}
+
+dependencyResolutionManagement {
+    // 关键：让 NeoForge 插件往项目里加 Mojang/NeoForged 仓库时不报冲突/不被拦
+    repositoriesMode.set(RepositoriesMode.PREFER_PROJECT)
+
+    repositories {
+        mavenCentral()
+        maven { url = "https://maven.neoforged.net/releases" }
+
+        // 关键：Modrinth Maven 只负责解析 maven.modrinth 这个 group，避免乱跑到别的仓库
+        maven {
+            url = "https://api.modrinth.com/maven"
+            content {
+                includeGroup("maven.modrinth")
+            }
+        }
+    }
+}
+
+rootProject.name = "DGmodules"

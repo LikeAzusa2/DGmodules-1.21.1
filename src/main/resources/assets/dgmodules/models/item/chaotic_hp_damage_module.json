@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "dgmodules:item/chaotic_hp_damage_module"
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "type": "draconicevolution:fusion_crafting",
+  "catalyst": {
+    "item": "dgmodules:wyvern_hp_damage_module"
+  },
+  "ingredients": [
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:awakened_core"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:draconic_energy_core"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:draconium_core"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:draconium_core"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:awakened_core"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:awakened_core"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "minecraft:redstone_block"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "type": "neoforge:components",
+        "items": "minecraft:potion",
+        "components": {
+          "minecraft:max_stack_size": 1,
+          "minecraft:potion_contents": {
+            "potion": "minecraft:strong_harming"
+          }
+        }
+      }
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "dgmodules:draconic_hp_damage_module"
+  },
+  "techLevel": "draconic",
+  "totalEnergy": 64000000
+}

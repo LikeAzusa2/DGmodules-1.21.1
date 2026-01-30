@@ -1,0 +1,19 @@
+# Gradle
+.gradle/
+build/
+run/
+
+# IDE
+.idea/
+*.iml
+out/
+
+# Local deps / tools
+libs/
+src.zip
+qodana.yaml
+TEMPLATE_LICENSE.txt
+
+# OS
+.DS_Store
+Thumbs.db
