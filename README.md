@@ -111,7 +111,11 @@ and license notice are preserved.
 但需保留原作者的版权声明与许可证文本。
 
 ---
+## Acknowledgements
 
+Parts of this project were developed with assistance from AI tools (ChatGPT).
+
+本项目的部分代码在开发过程中参考并使用了 AI 工具（ChatGPT）的辅助
 ## Disclaimer
 
 This project is not affiliated with or endorsed by
