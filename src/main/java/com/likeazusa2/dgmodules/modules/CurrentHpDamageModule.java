@@ -1,7 +1,6 @@
 package com.likeazusa2.dgmodules.modules;
 
 import com.brandon3055.brandonscore.api.TechLevel;
-import com.brandon3055.draconicevolution.api.modules.ModuleType;
 import com.brandon3055.draconicevolution.api.modules.data.ModuleProperties;
 import com.brandon3055.draconicevolution.api.modules.data.NoData;
 import com.brandon3055.draconicevolution.api.modules.lib.BaseModule;

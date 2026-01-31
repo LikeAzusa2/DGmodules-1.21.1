@@ -2,7 +2,6 @@ package com.likeazusa2.dgmodules.blocks;
 
 import com.likeazusa2.dgmodules.ModContent;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;

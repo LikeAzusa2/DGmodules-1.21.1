@@ -1,35 +1,33 @@
 package com.likeazusa2.dgmodules.logic;
 
-import com.likeazusa2.dgmodules.DGConfig;
-import com.likeazusa2.dgmodules.network.NetworkHandler;
-import com.likeazusa2.dgmodules.network.S2CLaserState;
-
-
-import com.brandon3055.draconicevolution.handlers.DESounds;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
+import com.brandon3055.draconicevolution.handlers.DESounds;
 import com.brandon3055.draconicevolution.init.DEDamage;
+import com.likeazusa2.dgmodules.DGConfig;
 import com.likeazusa2.dgmodules.DGModules;
 import com.likeazusa2.dgmodules.modules.ChaosLaserModule;
+import com.likeazusa2.dgmodules.network.NetworkHandler;
+import com.likeazusa2.dgmodules.network.S2CLaserState;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundSource;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.level.ClipContext;
 import org.joml.Vector3f;
 
 import java.util.HashMap;

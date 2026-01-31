@@ -1,12 +1,11 @@
 package com.likeazusa2.dgmodules.network;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
-import com.likeazusa2.dgmodules.network.S2CPhaseShieldLoopSound;
 
 import com.likeazusa2.dgmodules.DGModules;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 
 public class NetworkHandler {
     public static final String PROTOCOL = "1";

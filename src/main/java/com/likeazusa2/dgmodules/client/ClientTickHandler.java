@@ -3,8 +3,8 @@ package com.likeazusa2.dgmodules.client;
 import com.brandon3055.draconicevolution.handlers.DESounds;
 import com.likeazusa2.dgmodules.client.sound.ChaosLaserBeamSound;
 import com.likeazusa2.dgmodules.client.sound.ChaosLaserChargingSound;
-import com.likeazusa2.dgmodules.client.ClientPhaseShieldSound;
 import com.likeazusa2.dgmodules.network.C2SChaosLaser;
+import com.likeazusa2.dgmodules.network.C2SFlightTunerInput;
 import com.likeazusa2.dgmodules.network.C2SPhaseShieldToggle;
 import com.likeazusa2.dgmodules.network.NetworkHandler;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -16,7 +16,6 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import org.lwjgl.glfw.GLFW;
-import com.likeazusa2.dgmodules.network.C2SFlightTunerInput;
 
 /**
  * Client-side input + sound lifecycle (server-synced).

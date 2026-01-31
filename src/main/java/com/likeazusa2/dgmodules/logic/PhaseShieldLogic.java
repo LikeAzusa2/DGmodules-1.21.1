@@ -21,8 +21,6 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.fml.ModList;
 import top.theillusivec4.curios.api.CuriosApi;
 
-import java.util.UUID;
-
 public class PhaseShieldLogic {
 
     private static final String TAG_ACTIVE = "dg_phase_shield_active";

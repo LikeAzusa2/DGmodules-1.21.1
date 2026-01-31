@@ -1,12 +1,13 @@
 package com.likeazusa2.dgmodules.modules;
 
+import com.brandon3055.draconicevolution.api.modules.data.NoData;
+import com.brandon3055.draconicevolution.api.modules.lib.BaseModule;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import java.util.List;
-import com.brandon3055.draconicevolution.api.modules.data.NoData;
-import com.brandon3055.draconicevolution.api.modules.lib.BaseModule;
 import net.minecraft.world.item.Item;
+
+import java.util.List;
 
 
 public class DragonGuardModule extends BaseModule<NoData> {

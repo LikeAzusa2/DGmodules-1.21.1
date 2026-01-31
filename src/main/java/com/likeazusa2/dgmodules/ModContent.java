@@ -1,20 +1,19 @@
 package com.likeazusa2.dgmodules;
 
 import com.brandon3055.brandonscore.api.TechLevel;
-import com.likeazusa2.dgmodules.modules.*;
-import com.likeazusa2.dgmodules.blocks.DontIgniteBlock;
-import com.likeazusa2.dgmodules.blocks.DontIgniteBlockEntity;
-import net.minecraft.world.item.ItemStack;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.init.DEModules;
-import net.minecraft.world.item.Item;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import com.likeazusa2.dgmodules.blocks.DontIgniteBlock;
+import com.likeazusa2.dgmodules.blocks.DontIgniteBlockEntity;
+import com.likeazusa2.dgmodules.modules.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
-import com.likeazusa2.dgmodules.modules.CurrentHpDamageModuleItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class ModContent {
 

@@ -1,7 +1,7 @@
 package com.likeazusa2.dgmodules.client;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import com.likeazusa2.dgmodules.DGModules;
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;

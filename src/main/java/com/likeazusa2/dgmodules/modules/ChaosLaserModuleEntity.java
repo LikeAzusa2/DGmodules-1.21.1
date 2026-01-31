@@ -1,20 +1,19 @@
 package com.likeazusa2.dgmodules.modules;
 
 import com.brandon3055.brandonscore.api.power.IOPStorage;
-import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
-import net.minecraft.server.level.ServerPlayer;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.data.NoData;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
+import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
 import com.brandon3055.draconicevolution.init.DEModules;
+import com.likeazusa2.dgmodules.logic.ChaosLaserLogic;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-
-import com.likeazusa2.dgmodules.logic.ChaosLaserLogic;
+import net.minecraft.server.level.ServerPlayer;
 
 public class ChaosLaserModuleEntity extends ModuleEntity<NoData> {
 

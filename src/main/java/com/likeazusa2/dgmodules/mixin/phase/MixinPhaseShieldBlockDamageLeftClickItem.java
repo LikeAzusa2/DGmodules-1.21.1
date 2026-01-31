@@ -1,12 +1,11 @@
 package com.likeazusa2.dgmodules.mixin.phase;
 
+import com.likeazusa2.dgmodules.logic.PhaseShieldLogic;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.attributes.Attributes;
-import com.likeazusa2.dgmodules.logic.PhaseShieldLogic;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;

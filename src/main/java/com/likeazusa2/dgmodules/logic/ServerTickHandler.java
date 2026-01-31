@@ -1,7 +1,5 @@
 package com.likeazusa2.dgmodules.logic;
 
-import com.likeazusa2.dgmodules.logic.FlightTunerLogic;
-import com.likeazusa2.dgmodules.logic.DragonGuardLogic;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;

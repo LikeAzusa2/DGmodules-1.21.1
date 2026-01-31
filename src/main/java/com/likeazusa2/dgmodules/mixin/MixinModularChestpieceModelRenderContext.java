@@ -2,10 +2,10 @@ package com.likeazusa2.dgmodules.mixin.client;
 
 import com.brandon3055.draconicevolution.client.model.ModularChestpieceModel;
 import com.likeazusa2.dgmodules.client.DGShieldColourContext;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.world.item.ItemStack;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
