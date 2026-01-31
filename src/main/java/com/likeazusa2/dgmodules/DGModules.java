@@ -13,7 +13,6 @@ import net.neoforged.fml.event.lifecycle.FMLConstructModEvent;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.NeoForge;
 import org.slf4j.Logger;
-
 import static com.likeazusa2.dgmodules.ModContent.CREATIVE_TABS;
 
 @Mod(DGModules.MODID)
