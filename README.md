@@ -116,6 +116,15 @@ and license notice are preserved.
 Parts of this project were developed with assistance from AI tools (ChatGPT).
 
 本项目的部分代码在开发过程中参考并使用了 AI 工具（ChatGPT）的辅助
+
+The “No Inertia” (immediate stop) behavior in this mod was inspired by the implementation ideas from the mod **Gravitational Modulating Unit Tweaks** by **gisellevonbingen**, which is licensed under the MIT License.
+
+本模组中的“无惯性（立即停止）”行为在设计思路上参考了 **gisellevonbingen** 开发的模组 **Gravitational Modulating Unit Tweaks**（MIT 许可证）。
+
+This project does **not** include or redistribute any original assets from that mod.  
+All implementation details were adapted and reworked for this project.
+
+本项目未直接包含或分发上述模组的原始资源，具体实现已根据本模组需求进行了调整与重写。
 ## Disclaimer
 
 This project is not affiliated with or endorsed by
