@@ -14,8 +14,55 @@ tasks.named('wrapper', Wrapper).configure {
     distributionType = Wrapper.DistributionType.BIN
 }
 
-version = mod_version
+/**
+ * Resolve version from the latest reachable Git tag.
+ * - If building from a tagged commit (e.g. 1.0.1), version becomes 1.0.1
+ * - If no tag is found / git unavailable (e.g. IDE import), falls back to gradle.properties `mod_version`
+ */
+def getGitTagVersion() {
+    try {
+        def out = new ByteArrayOutputStream()
+        exec {
+            commandLine 'git', 'describe', '--tags', '--abbrev=0'
+            standardOutput = out
+            errorOutput = new ByteArrayOutputStream()
+            ignoreExitValue = true
+        }
+        def v = out.toString().trim()
+        if (v) {
+            // allow tags like v1.0.1
+            return v.startsWith('v') ? v.substring(1) : v
+        }
+    } catch (Exception ignored) {
+        // ignore and fall back
+    }
+    return null
+}
+
+// Resolve version for this build.
+// Prefer the latest reachable Git tag (e.g. 1.0.1). Fall back to gradle.properties `mod_version`.
+def gitVer = getGitTagVersion()
+def resolvedVersion = gitVer ?: mod_version
+
+version = resolvedVersion
+ext.mod_version = resolvedVersion
 group = mod_group_id
+
+
+def jarVer = providers.provider { resolvedVersion.toString() }
+def lic = providers.gradleProperty("mod_license").orElse("MIT")
+
+tasks.withType(ProcessResources).configureEach {
+    inputs.property("version", jarVer)
+
+    filesMatching("META-INF/neoforge.mods.toml") {
+        expand(
+                "file.jarVersion": jarVer.get(),
+                "mod_version": jarVer.get(),
+                "mod_license": lic.get()
+        )
+    }
+}
 
 repositories {
     mavenCentral()

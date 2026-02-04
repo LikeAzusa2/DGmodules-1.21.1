@@ -1,10 +1,11 @@
 modLoader="javafml"
 loaderVersion="[4,)"
-license="MIT"
+license="${mod_license}"
 
 [[mods]]
 modId="dgmodules"
-version="1.0.0"
+version="${mod_version}"
+
 displayName="DG Modules"
 authors="LikeAzusa2"
 description='''
