@@ -45,6 +45,8 @@
   "key.dgmodules.phase_shield_toggle": "Toggle Phase Shield",
   "hud.dgmodules.phase_shield.on": "Phase Shield enabled - it won't last long, get out of danger!",
   "hud.dgmodules.phase_shield.time": "Estimated time remaining: %s s",
+
+  "item.dgmodules.shield_control_booster_module": "Shield Control Booster Module",
   "module_type.draconicevolution.shield_control_booster.name":"Shield Control Booster",
   "module.dgmodules.shield_control_booster.line1": "• Reduce shield regeneration cooldown time",
   "module.dgmodules.shield_control_booster.line2": "• Enhance the overall performance of the shield",

@@ -118,7 +118,7 @@ public static final DeferredRegister<CreativeModeTab> CREATIVE_TABS =
 
     public static final DeferredHolder<Module<?>, CurrentHpDamageModule> WYVERN_HP_DAMAGE_MODULE =
             DG_MODULES.register("wyvern_hp_damage",
-                    () -> new CurrentHpDamageModule(WYVERN_HP_DAMAGE_MODULE_ITEM.get(), com.brandon3055.brandonscore.api.TechLevel.WYVERN, 0.03f)
+                    () -> new CurrentHpDamageModule(WYVERN_HP_DAMAGE_MODULE_ITEM.get(), TechLevel.DRACONIUM, 0.03f)
             );
 
     private static Module<?> getWyvernHpDamageModule() {
