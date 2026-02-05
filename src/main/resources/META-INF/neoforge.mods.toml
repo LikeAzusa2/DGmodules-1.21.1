@@ -5,7 +5,6 @@ license="${mod_license}"
 [[mods]]
 modId="dgmodules"
 version="${mod_version}"
-
 displayName="DG Modules"
 authors="LikeAzusa2"
 description='''
