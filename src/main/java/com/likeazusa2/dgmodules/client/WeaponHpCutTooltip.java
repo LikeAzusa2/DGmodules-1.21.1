@@ -12,6 +12,7 @@ import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 
 public class WeaponHpCutTooltip {
 
+
     @SubscribeEvent
     public static void onTooltip(ItemTooltipEvent event) {
         ItemStack stack = event.getItemStack();
