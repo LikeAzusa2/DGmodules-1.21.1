@@ -55,5 +55,17 @@
   "item.dgmodules.phase_shield_module": "相位护盾模块",
   "key.dgmodules.phase_shield_toggle": "切换相位护盾",
   "hud.dgmodules.phase_shield.on": "相位护盾已开启，但它持续不了多久，请迅速远离危险！",
-  "hud.dgmodules.phase_shield.time": "预计剩余时间: %s 秒"
+  "hud.dgmodules.phase_shield.time": "预计剩余时间: %s 秒",
+
+  "item.dgmodules.cataclysm_arrow_module": "天灾箭矢模块",
+  "module_type.draconicevolution.cataclysm_arrow.name": "天灾箭矢",
+  "module.dgmodules.cataclysm_arrow.desc": "箭矢命中后引发剧烈天灾爆破，造成高强度爆炸伤害。",
+  "tooltip.dgmodules.cataclysm_arrow.cost": "每发射一支箭消耗 650,000 OP，可在宿主配置 GUI 中开关。",
+  "death.attack.cataclysm_arrow": "%1$s 被天灾箭矢之力湮灭",
+  "death.attack.cataclysm_arrow.player": "%1$s 被 %2$s 的天灾箭矢湮灭",
+  "item_prop.draconicevolution.enabled": "启用天灾箭矢",
+  "item_prop.draconicevolution.high_frequency_pierce": "启用高频穿甲脉冲",
+  "item_prop.draconicevolution.summon_fireball": "启动天罚",
+  "death.attack.cataclysm_pierce": "%1$s 被天灾高频脉冲撕裂",
+  "death.attack.cataclysm_pierce.player": "%1$s 被 %2$s 的天灾高频脉冲撕裂"
 }

@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "dgmodules:cataclysm_arrow",
+    "dgmodules:cataclysm_pierce"
+  ]
+}

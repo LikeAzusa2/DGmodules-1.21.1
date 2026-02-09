@@ -69,6 +69,21 @@ public static final DeferredRegister<CreativeModeTab> CREATIVE_TABS =
         return CHAOS_LASER_MODULE.get();
     }
 
+    // ===== Cataclysm Arrow =====
+    public static final DeferredHolder<Item, CataclysmArrowModuleItem> CATACLYSM_ARROW_MODULE_ITEM =
+            ITEMS.register("cataclysm_arrow_module",
+                    () -> new CataclysmArrowModuleItem(new Item.Properties(), ModContent::getCataclysmArrowModule)
+            );
+
+    public static final DeferredHolder<Module<?>, CataclysmArrowModule> CATACLYSM_ARROW_MODULE =
+            DG_MODULES.register("cataclysm_arrow",
+                    () -> new CataclysmArrowModule(CATACLYSM_ARROW_MODULE_ITEM.get())
+            );
+
+    private static Module<?> getCataclysmArrowModule() {
+        return CATACLYSM_ARROW_MODULE.get();
+    }
+
     public static void init(IEventBus modBus) {
         ITEMS.register(modBus);
         BLOCKS.register(modBus);
@@ -316,6 +331,7 @@ public static final DeferredHolder<CreativeModeTab, CreativeModeTab> DG_MODULES_
                                 output.accept(COMPRESSED_CHAOTIC_LARGE_SHIELD_CAPACITY_MODULE_ITEM.get());
                                 output.accept(COMPRESSED_CHAOTIC_DAMAGE_MODULE_ITEM.get());
                                 output.accept(COMPRESSED_CHAOTIC_SPEED_MODULE_ITEM.get());
+                                output.accept(CATACLYSM_ARROW_MODULE_ITEM.get());
                             })
                             .build()
             );

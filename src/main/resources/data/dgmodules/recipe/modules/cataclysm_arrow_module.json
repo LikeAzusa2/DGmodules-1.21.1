@@ -1,0 +1,26 @@
+{
+  "type": "draconicevolution:fusion_crafting",
+  "catalyst": {
+    "item": "minecraft:nether_star"
+  },
+  "ingredients": [
+    {"consume": true, "ingredient": {"item": "draconicevolution:chaotic_core"}},
+    {"consume": true, "ingredient": {"item": "draconicevolution:chaotic_core"}},
+    {"consume": true, "ingredient": {"item": "draconicevolution:chaotic_energy_core"}},
+    {"consume": true, "ingredient": {"item": "draconicevolution:chaotic_energy_core"}},
+    {"consume": true, "ingredient": {"item": "draconicevolution:large_chaos_frag"}},
+    {"consume": true, "ingredient": {"item": "draconicevolution:large_chaos_frag"}},
+    {"consume": true, "ingredient": {"item": "draconicevolution:item_chaotic_damage"}},
+    {"consume": true, "ingredient": {"item": "draconicevolution:item_chaotic_damage"}},
+    {"consume": true, "ingredient": {"item": "minecraft:tnt"}},
+    {"consume": true, "ingredient": {"item": "minecraft:end_crystal"}},
+    {"consume": true, "ingredient": {"item": "draconicevolution:draconic_energy_core"}},
+    {"consume": true, "ingredient": {"item": "draconicevolution:draconic_energy_core"}}
+  ],
+  "result": {
+    "id": "dgmodules:cataclysm_arrow_module",
+    "count": 1
+  },
+  "techLevel": "chaotic",
+  "totalEnergy": 8000000000
+}
