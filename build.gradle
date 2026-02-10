@@ -130,7 +130,14 @@ neoForge {
         runtimeOnly("maven.modrinth:brandons-core:3.2.1.307")
         runtimeOnly("maven.modrinth:codechicken-lib:4.6.1.524")
         runtimeOnly("maven.modrinth:curios:9.5.1+1.21.1")
+
+        testImplementation(platform("org.junit:junit-bom:5.11.4"))
+        testImplementation("org.junit.jupiter:junit-jupiter")
     }
+
+tasks.named('test', Test).configure {
+    useJUnitPlatform()
+}
 
 
 
@@ -241,6 +248,5 @@ neoForge {
                         downloadJavadoc = true
                     }
                 }
-
 
 

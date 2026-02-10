@@ -8,6 +8,7 @@ import com.brandon3055.draconicevolution.api.modules.Module;
 import com.likeazusa2.dgmodules.DGModules;
 import com.likeazusa2.dgmodules.modules.CurrentHpDamageModule;
 import com.likeazusa2.dgmodules.modules.CurrentHpDamageModuleType;
+import com.likeazusa2.dgmodules.util.EnergyMath;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -84,13 +85,13 @@ public class CurrentHpDamageEvents {
         if (extra <= 0) return;
 
         // ✅ 扣能：向上取整，避免 0.1 点伤害只扣 200 OP 被白嫖
-        long cost = (long) Math.ceil(extra) * OP_PER_DAMAGE;
+        long cost = EnergyMath.costForExtraDamage(extra, OP_PER_DAMAGE);
 
         // ✅ 参考你 ChaosLaserModuleEntity 的写法：
         //    DE 工具能量口有时 extractOP 返回 0，因此优先 OPStorage.modifyEnergyStored(-cost)
         long paid;
         if (op instanceof OPStorage ops) {
-            paid = ops.modifyEnergyStored(-cost);
+            paid = EnergyMath.normalizePaidEnergy(ops.modifyEnergyStored(-cost));
         } else {
             paid = op.extractOP(cost, false);
         }
@@ -98,7 +99,7 @@ public class CurrentHpDamageEvents {
         if (paid <= 0) return;
 
         // 由于 paid 可能不足 cost，这里按“实际扣到的 OP”反推可追加的伤害，确保不超付
-        float actualExtra = (float) (paid / (double) OP_PER_DAMAGE);
+        float actualExtra = EnergyMath.extraDamageFromEnergy(paid, OP_PER_DAMAGE);
         if (actualExtra <= 0) return;
 
         event.setNewDamage(event.getNewDamage() + actualExtra);

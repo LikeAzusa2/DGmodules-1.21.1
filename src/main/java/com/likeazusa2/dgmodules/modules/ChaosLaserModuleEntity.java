@@ -8,6 +8,7 @@ import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
 import com.brandon3055.draconicevolution.init.DEModules;
 import com.likeazusa2.dgmodules.logic.ChaosLaserLogic;
+import com.likeazusa2.dgmodules.util.EnergyMath;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -72,7 +73,7 @@ public class ChaosLaserModuleEntity extends ModuleEntity<NoData> {
         //    模块内部消耗用 OPStorage.modifyEnergyStored(-cost)
         if (op instanceof com.brandon3055.brandonscore.api.power.OPStorage ops) {
             // modifyEnergyStored 返回实际变化的绝对值（通常就是 cost）
-            paid = ops.modifyEnergyStored(-cost);
+            paid = EnergyMath.normalizePaidEnergy(ops.modifyEnergyStored(-cost));
         } else {
             paid = op.extractOP(cost, false);
         }
