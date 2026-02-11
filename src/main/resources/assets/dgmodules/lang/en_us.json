@@ -45,13 +45,11 @@
   "key.dgmodules.phase_shield_toggle": "Toggle Phase Shield",
   "hud.dgmodules.phase_shield.on": "Phase Shield enabled - it won't last long, get out of danger!",
   "hud.dgmodules.phase_shield.time": "Estimated time remaining: %s s",
-
   "item.dgmodules.shield_control_booster_module": "Shield Control Booster Module",
-  "module_type.draconicevolution.shield_control_booster.name":"Shield Control Booster",
+  "module_type.draconicevolution.shield_control_booster.name": "Shield Control Booster",
   "module.dgmodules.shield_control_booster.line1": "• Reduce shield regeneration cooldown time",
   "module.dgmodules.shield_control_booster.line2": "• Enhance the overall performance of the shield",
   "module_type.draconicevolution.phase_shield.name": "Phase Shield",
-
   "item.dgmodules.cataclysm_arrow_module": "Cataclysm Arrow Module",
   "module_type.draconicevolution.cataclysm_arrow.name": "Cataclysm Arrow",
   "module.dgmodules.cataclysm_arrow.desc": "Arrows trigger a violent cataclysm on impact, dealing devastating explosion damage.",
@@ -62,5 +60,10 @@
   "item_prop.draconicevolution.high_frequency_pierce": "Enable high-frequency armor-piercing pulses",
   "item_prop.draconicevolution.summon_fireball": "Enable Cataclysm",
   "death.attack.cataclysm_pierce": "%1$s was shredded by high-frequency cataclysm pulses",
-  "death.attack.cataclysm_pierce.player": "%1$s was shredded by %2$s's cataclysm pulses"
+  "death.attack.cataclysm_pierce.player": "%1$s was shredded by %2$s's cataclysm pulses",
+  "item.dgmodules.frame_breaker_module": "Frame Breaker Module",
+  "module_type.draconicevolution.frame_breaker.name": "Frame Breaker",
+  "module.dgmodules.frame_breaker.desc": "Clears target i-frames so high-frequency hits can apply every time.",
+  "item_prop.draconicevolution.affect_players": "Affect Players",
+  "item_prop.draconicevolution.energy_cost_per_hit": "Energy Cost Per Hit"
 }
