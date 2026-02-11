@@ -84,6 +84,21 @@ public static final DeferredRegister<CreativeModeTab> CREATIVE_TABS =
         return CATACLYSM_ARROW_MODULE.get();
     }
 
+    // ===== Frame Breaker =====
+    public static final DeferredHolder<Item, FrameBreakerModuleItem> FRAME_BREAKER_MODULE_ITEM =
+            ITEMS.register("frame_breaker_module",
+                    () -> new FrameBreakerModuleItem(new Item.Properties(), ModContent::getFrameBreakerModule)
+            );
+
+    public static final DeferredHolder<Module<?>, FrameBreakerModule> FRAME_BREAKER_MODULE =
+            DG_MODULES.register("frame_breaker",
+                    () -> new FrameBreakerModule(FRAME_BREAKER_MODULE_ITEM.get())
+            );
+
+    private static Module<?> getFrameBreakerModule() {
+        return FRAME_BREAKER_MODULE.get();
+    }
+
     public static void init(IEventBus modBus) {
         ITEMS.register(modBus);
         BLOCKS.register(modBus);
@@ -332,6 +347,7 @@ public static final DeferredHolder<CreativeModeTab, CreativeModeTab> DG_MODULES_
                                 output.accept(COMPRESSED_CHAOTIC_DAMAGE_MODULE_ITEM.get());
                                 output.accept(COMPRESSED_CHAOTIC_SPEED_MODULE_ITEM.get());
                                 output.accept(CATACLYSM_ARROW_MODULE_ITEM.get());
+                                output.accept(FRAME_BREAKER_MODULE_ITEM.get());
                             })
                             .build()
             );

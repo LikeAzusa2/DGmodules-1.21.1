@@ -7,6 +7,8 @@
     "MixinShieldControlEntity",
     "MixinModuleEntityHostAccess",
 
+    "frame.MixinFrameBreakerLivingHurt",
+
     "phase.MixinPhaseShieldHurt",
     "phase.MixinPhaseShieldBlockDamageLeftClickItem",
     "phase.MixinPhaseShieldPickable"
