@@ -10,6 +10,7 @@ import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
 import com.brandon3055.draconicevolution.init.DEModules;
+import com.likeazusa2.dgmodules.logic.DGHostLocator;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -73,7 +74,7 @@ public class DragonGuardModuleEntity extends ModuleEntity<NoData> {
         long now = sp.serverLevel().getGameTime();
         if (alreadyTriggeredRecently(sp, now)) return;
 
-        ItemStack chest = sp.getItemBySlot(EquipmentSlot.CHEST);
+        ItemStack chest = DGHostLocator.findChestLikeHost(sp, DragonGuardModuleEntity::hostHasDragonGuard);
         if (chest.isEmpty()) return;
 
         try (ModuleHost host = DECapabilities.getHost(chest)) {

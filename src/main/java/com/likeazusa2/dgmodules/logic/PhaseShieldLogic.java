@@ -23,8 +23,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.fml.ModList;
-import top.theillusivec4.curios.api.CuriosApi;
 
 public class PhaseShieldLogic {
 
@@ -108,7 +106,7 @@ public class PhaseShieldLogic {
 
         if (!canActivate(sp)) return;
 
-        ItemStack chest = findChaoticChestFromArmorOrCurios(sp);
+        ItemStack chest = findPhaseShieldHost(sp);
         int seconds = (int) Math.min(Integer.MAX_VALUE, estimateSecondsRemaining(sp, chest));
         setActive(sp, true, seconds, true);
     }
@@ -122,7 +120,7 @@ public class PhaseShieldLogic {
             return false;
         }
 
-        ItemStack chest = findChaoticChestFromArmorOrCurios(sp);
+        ItemStack chest = findPhaseShieldHost(sp);
         int seconds = (int) Math.min(Integer.MAX_VALUE, estimateSecondsRemaining(sp, chest));
         if (seconds <= 0) {
             DGModules.LOGGER.info(
@@ -147,7 +145,7 @@ public class PhaseShieldLogic {
     public static boolean canActivate(ServerPlayer sp) {
         if (sp == null || sp.isSpectator()) return false;
 
-        ItemStack chest = findChaoticChestFromArmorOrCurios(sp);
+        ItemStack chest = findPhaseShieldHost(sp);
         if (chest.isEmpty()) return false;
 
         try (ModuleHost host = DECapabilities.getHost(chest)) {
@@ -174,7 +172,7 @@ public class PhaseShieldLogic {
 
         applyHealthAndMaxHealthGuard(sp);
 
-        ItemStack chest = findChaoticChestFromArmorOrCurios(sp);
+        ItemStack chest = findPhaseShieldHost(sp);
         if (chest.isEmpty()) {
             setActive(sp, false, 0, false);
             return;
@@ -348,7 +346,7 @@ public class PhaseShieldLogic {
 
     private static void debugEmergencyFail(ServerPlayer sp, String stage) {
         if (sp == null) return;
-        ItemStack chest = findChaoticChestFromArmorOrCurios(sp);
+        ItemStack chest = findPhaseShieldHost(sp);
         if (chest.isEmpty()) {
             DGModules.LOGGER.info("[PhaseShield] {} denied player={} reason=no_chaotic_chest", stage, sp.getGameProfile().getName());
             return;
@@ -509,22 +507,16 @@ public class PhaseShieldLogic {
         }
     }
 
-    private static boolean isChaoticChest(ItemStack stack) {
-        return !stack.isEmpty() && stack.getItem() == DEContent.CHESTPIECE_CHAOTIC.get();
+    /**
+     * 相位护盾真正关心的是“宿主里有没有相位护盾模块和增幅模块”，
+     * 而不是宿主本身是不是原版混沌胸甲。
+     */
+    private static ItemStack findPhaseShieldHost(ServerPlayer sp) {
+        return DGHostLocator.findChestLikeHost(sp, host ->
+                PhaseShieldModuleEntity.hostHasPhaseShield(host) && hostHasShieldControlBooster(host)
+        );
     }
 
-    @SuppressWarnings("deprecation")
-    private static ItemStack findChaoticChestFromArmorOrCurios(ServerPlayer sp) {
-        ItemStack chest = sp.getItemBySlot(EquipmentSlot.CHEST);
-        if (isChaoticChest(chest)) return chest;
-
-        if (!ModList.get().isLoaded("curios")) return ItemStack.EMPTY;
-
-        return CuriosApi.getCuriosHelper()
-                .findFirstCurio(sp, PhaseShieldLogic::isChaoticChest)
-                .map(r -> r.stack())
-                .orElse(ItemStack.EMPTY);
-    }
 }
 
 
