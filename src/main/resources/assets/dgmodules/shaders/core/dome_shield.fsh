@@ -20,7 +20,7 @@ float hash31(vec3 p) {
     return fract(sin(dot(p, vec3(127.1, 311.7, 191.3))) * 43758.5453123);
 }
 
-float noise3(vec3 x) {
+float valueNoise3(vec3 x) {
     vec3 i = floor(x);
     vec3 f = fract(x);
     vec3 u = f * f * (3.0 - 2.0 * f);
@@ -47,7 +47,7 @@ float fbm(vec3 p) {
     float value = 0.0;
     float amp = 0.5;
     for (int i = 0; i < 5; i++) {
-        value += noise3(p) * amp;
+        value += valueNoise3(p) * amp;
         p = p * 2.03 + vec3(13.7, 9.2, 11.4);
         amp *= 0.52;
     }
@@ -70,7 +70,7 @@ void main() {
     float n1 = fbm(flowA);
     float n2 = fbm(flowB);
     float n3 = fbm(flowC + vec3(n1, n2, n1 - n2) * 1.7);
-    float n4 = noise3(local * 12.0 + vec3(-t * 0.72, t * 0.48, t * 0.38));
+    float n4 = valueNoise3(local * 12.0 + vec3(-t * 0.72, t * 0.48, t * 0.38));
 
     float field = n1 * 0.30 + n2 * 0.24 + n3 * 0.30 + n4 * 0.16;
     float distortion = fbm(local * 3.3 + dir.yzx * 2.8 + vec3(0.0, -t * 0.28, t * 0.19));
