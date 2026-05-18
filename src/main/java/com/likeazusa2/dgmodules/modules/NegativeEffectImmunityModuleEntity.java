@@ -1,23 +1,15 @@
 package com.likeazusa2.dgmodules.modules;
 
+import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.data.NoData;
-import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
-import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
 import com.brandon3055.draconicevolution.init.DEModules;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.Holder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.effect.MobEffect;
-import net.minecraft.world.effect.MobEffectCategory;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.LivingEntity;
-
-import java.util.ArrayList;
 
 public class NegativeEffectImmunityModuleEntity extends ModuleEntity<NoData> {
 
@@ -48,18 +40,16 @@ public class NegativeEffectImmunityModuleEntity extends ModuleEntity<NoData> {
         return new NegativeEffectImmunityModuleEntity((Module<NoData>) this.module, getGridX(), getGridY());
     }
 
-    @Override
-    public void tick(ModuleContext context) {
-        if (!(context instanceof StackModuleContext ctx)) return;
-
-        LivingEntity living = ctx.getEntity();
-        if (living == null || living.level().isClientSide) return;
-
-        for (MobEffectInstance effect : new ArrayList<>(living.getActiveEffects())) {
-            Holder<MobEffect> holder = effect.getEffect();
-            if (holder.value().getCategory() == MobEffectCategory.HARMFUL) {
-                living.removeEffect(holder);
+    /**
+     * 在宿主上检测是否安装了负面效果免疫模块。
+     * 供事件层在 MobEffectEvent.Applicable 阶段调用以决定是否拦截效果施加。
+     */
+    public static boolean hostHasNegativeEffectImmunity(ModuleHost host) {
+        try {
+            for (var ent : host.getModuleEntities()) {
+                if (ent.getModule() instanceof NegativeEffectImmunityModule) return true;
             }
-        }
+        } catch (Throwable ignored) {}
+        return false;
     }
 }

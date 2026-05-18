@@ -24,9 +24,18 @@ import org.joml.Matrix4f;
 
 import java.util.Objects;
 
+/**
+ * 护盾穹顶渲染器 — 常态仅渲染贴合半球表面的圆环（带状弧线），大幅减少顶点数。
+ * 受击时短暂显示完整半球护盾，随后恢复圆环模式。
+ *
+ * 性能：
+ *  - 常态 8 条环带 × 64 步 ≈ 1024 三角形（原 65536 → 降低 98%）
+ *  - 受击 32×64 半球 ≈ 4096 三角形
+ */
 public class DraconicShieldDomeCoreRenderer extends EntityRenderer<DraconicShieldDomeCoreEntity> {
 
-    private static final ResourceLocation SHIELD_DUMMY_TEXTURE = ResourceLocation.fromNamespaceAndPath("minecraft", "textures/misc/white.png");
+    private static final ResourceLocation SHIELD_DUMMY_TEXTURE =
+            ResourceLocation.fromNamespaceAndPath("minecraft", "textures/misc/white.png");
 
     private static final RenderType DOME_SHIELD_TYPE = RenderType.create(
             "dgmodules:draconic_shield_dome",
@@ -58,7 +67,8 @@ public class DraconicShieldDomeCoreRenderer extends EntityRenderer<DraconicShiel
     }
 
     @Override
-    public boolean shouldRender(DraconicShieldDomeCoreEntity entity, Frustum frustum, double camX, double camY, double camZ) {
+    public boolean shouldRender(DraconicShieldDomeCoreEntity entity, Frustum frustum,
+                                 double camX, double camY, double camZ) {
         double r = entity.getDomeRadius() + 1.0D;
         AABB visualBox = new AABB(
                 entity.getX() - r, entity.getY() - 1.0D, entity.getZ() - r,
@@ -68,7 +78,8 @@ public class DraconicShieldDomeCoreRenderer extends EntityRenderer<DraconicShiel
     }
 
     @Override
-    public void render(DraconicShieldDomeCoreEntity entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
+    public void render(DraconicShieldDomeCoreEntity entity, float entityYaw, float partialTick,
+                       PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
         float radius = entity.getDomeRadius();
         float time = entity.tickCount + partialTick;
 
@@ -79,62 +90,93 @@ public class DraconicShieldDomeCoreRenderer extends EntityRenderer<DraconicShiel
         super.render(entity, entityYaw, partialTick, poseStack, buffer, packedLight);
     }
 
-    private void renderShieldDome(DraconicShieldDomeCoreEntity entity, PoseStack poseStack, MultiBufferSource buffer, int packedLight, float radius, float time) {
-        float flash = Mth.clamp(entity.getHitFlashTicks() / 6.0F, 0.0F, 1.0F);
+    private void renderShieldDome(DraconicShieldDomeCoreEntity entity, PoseStack poseStack,
+                                   MultiBufferSource buffer, int packedLight, float radius, float time) {
+        boolean hitFlash = entity.getHitFlashTicks() > 0;
         float fade = 1.0F;
         try {
             fade = entity.getFadeFactor();
-        } catch (Throwable ignored) {
-        }
+        } catch (Throwable ignored) {}
 
         Matrix4f mat = poseStack.last().pose();
         VertexConsumer vc = buffer.getBuffer(DOME_SHIELD_TYPE);
-        Vec3 cameraPos = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition().subtract(entity.position());
+        Vec3 cameraPos = Minecraft.getInstance().gameRenderer.getMainCamera()
+                .getPosition().subtract(entity.position());
         boolean insideView = cameraPos.lengthSqr() < (radius * radius);
 
+        // 受击闪烁：颜色偏白偏亮
+        float flash = Mth.clamp(entity.getHitFlashTicks() / 6.0F, 0.0F, 1.0F);
+        float outerR = Mth.lerp(flash, 0.42F, 0.95F);
+        float outerG = Mth.lerp(flash, 0.02F, 0.30F);
+        float outerB = Mth.lerp(flash, 0.02F, 0.30F);
+        float outerA = Mth.lerp(flash, 0.94F, 0.90F) * fade;
+
         float pulse = 0.74F + 0.26F * (0.5F + 0.5F * Mth.sin(time * 0.28F));
-        float outerR = Mth.lerp(flash, 0.42F, 1.0F);
-        float outerG = Mth.lerp(flash, 0.02F, 0.11F);
-        float outerB = Mth.lerp(flash, 0.02F, 0.10F);
-        float outerA = Mth.lerp(flash, 0.94F, 0.82F) * fade;
-        safeSetUniforms(time * 1.55F, outerR, outerG, outerB, outerA, (0.28F + pulse * 0.06F) * fade, 1.16F + pulse * 0.14F, fade, cameraPos, insideView);
-        renderHemisphereMesh(vc, mat, packedLight, radius, time, 128, 256);
+        float baseAlpha = (0.28F + pulse * 0.06F) * fade;
+        float strength = 1.16F + pulse * 0.14F;
+
+        safeSetUniforms(time * 1.55F, outerR, outerG, outerB, outerA,
+                baseAlpha, strength, fade, cameraPos, insideView);
+
+        if (hitFlash) {
+            // 受击：短暂渲染完整半球护盾（降低分辨率）
+            renderFullDome(vc, mat, packedLight, radius, time, 32, 64);
+        } else {
+            // 常态：仅渲染贴合半球曲面轮廓的圆环（环带纹理网格）
+            renderRingBands(vc, mat, packedLight, radius, time);
+        }
 
         if (buffer instanceof MultiBufferSource.BufferSource bs) {
             bs.endBatch(DOME_SHIELD_TYPE);
         }
     }
 
-    private static void safeSetUniforms(float time, float r, float g, float b, float a, float baseAlpha, float strength, float activation, Vec3 camPos, boolean insideView) {
-        ShaderInstance shader = DraconicShieldDomeClientEvents.DOME_WAVE_SHADER;
-        if (shader == null) return;
+    /**
+     * 常态圆环：沿纬度方向铺 8 条环带，紧密贴合半球曲率。
+     * 每条环带按时间旋转流动（自转 + 上下微波动），产生护盾"呼吸"感。
+     * 总共约 8×64×2 ≈ 1024 三角形。
+     */
+    private void renderRingBands(VertexConsumer vc, Matrix4f mat, int packedLight,
+                                  float radius, float time) {
+        int ringCount = 8;
+        int phiSteps = 64;
 
-        try {
-            Uniform uTime = shader.getUniform("u_Time");
-            if (uTime != null) uTime.set(time / 12.0F);
+        for (int ring = 0; ring < ringCount; ring++) {
+            float t0 = (float) ring / ringCount;
+            float t1 = (float) (ring + 1) / ringCount;
+            float theta0 = Mth.HALF_PI * t0;
+            float theta1 = Mth.HALF_PI * t1;
+            float mid = (theta0 + theta1) * 0.5F;
+            float halfWidth = 0.03F;
 
-            Uniform uStrength = shader.getUniform("u_Strength");
-            if (uStrength != null) uStrength.set(strength);
+            // 每条环带以不同速度 + 方向旋转
+            float ringRotSpeed = 0.012F + ring * 0.005F;
+            boolean reverse = (ring % 2) == 1;
+            float ringOffset = time * ringRotSpeed * (reverse ? -1.0F : 1.0F);
 
-            Uniform uAlpha = shader.getUniform("u_Alpha");
-            if (uAlpha != null) uAlpha.set(baseAlpha);
+            for (int j = 0; j <= phiSteps; j++) {
+                float phi = Mth.TWO_PI * (j / (float) phiSteps) + ringOffset;
 
-            Uniform uAct = shader.getUniform("Activation");
-            if (uAct != null) uAct.set(activation);
+                // 上下微波动：用 sin(phi + time) 调制环带高低
+                float wave = Mth.sin(phi * 3.0F + time * 0.06F + ring * 1.2F) * 0.012F;
+                float inner = Math.max(0.0F, mid - halfWidth + wave);
+                float outer = Math.min(Mth.HALF_PI, mid + halfWidth + wave);
 
-            Uniform uBase = shader.getUniform("u_BaseColor");
-            if (uBase != null) uBase.set(r, g, b, a);
+                Vec3 pi = sphere(radius, inner, phi);
+                Vec3 po = sphere(radius, outer, phi);
 
-            Uniform uCamPos = shader.getUniform("u_CamPos");
-            if (uCamPos != null) uCamPos.set((float) camPos.x, (float) camPos.y, (float) camPos.z);
-
-            Uniform uInside = shader.getUniform("u_Inside");
-            if (uInside != null) uInside.set(insideView ? 1.0F : 0.0F);
-        } catch (NullPointerException ignored) {
+                putVertex(vc, mat, packedLight, pi, time);
+                putVertex(vc, mat, packedLight, po, time);
+            }
         }
     }
 
-    private void renderHemisphereMesh(VertexConsumer vc, Matrix4f mat, int packedLight, float radius, float time, int latSteps, int lonSteps) {
+    /**
+     * 受击闪烁：完整半球面片（降分辨率），仅在 HIT_FLASH_TICKS > 0 时调用。
+     * 32 纬度 × 64 经度 ≈ 4096 三角形（原 128×256 的 1/16）。
+     */
+    private void renderFullDome(VertexConsumer vc, Matrix4f mat, int packedLight,
+                                 float radius, float time, int latSteps, int lonSteps) {
         for (int i = 0; i < latSteps; i++) {
             float theta1 = Mth.HALF_PI * (i / (float) latSteps);
             float theta2 = Mth.HALF_PI * ((i + 1) / (float) latSteps);
@@ -177,6 +219,38 @@ public class DraconicShieldDomeCoreRenderer extends EntityRenderer<DraconicShiel
                 .setOverlay(OverlayTexture.NO_OVERLAY)
                 .setLight(packedLight)
                 .setNormal((float) n.x, (float) n.y, (float) n.z);
+    }
+
+    // ---- Shader uniform helpers ----
+
+    private static void safeSetUniforms(float time, float r, float g, float b, float a,
+                                         float baseAlpha, float strength, float activation,
+                                         Vec3 camPos, boolean insideView) {
+        ShaderInstance shader = DraconicShieldDomeClientEvents.DOME_WAVE_SHADER;
+        if (shader == null) return;
+
+        try {
+            Uniform uTime = shader.getUniform("u_Time");
+            if (uTime != null) uTime.set(time / 12.0F);
+
+            Uniform uStrength = shader.getUniform("u_Strength");
+            if (uStrength != null) uStrength.set(strength);
+
+            Uniform uAlpha = shader.getUniform("u_Alpha");
+            if (uAlpha != null) uAlpha.set(baseAlpha);
+
+            Uniform uAct = shader.getUniform("Activation");
+            if (uAct != null) uAct.set(activation);
+
+            Uniform uBase = shader.getUniform("u_BaseColor");
+            if (uBase != null) uBase.set(r, g, b, a);
+
+            Uniform uCamPos = shader.getUniform("u_CamPos");
+            if (uCamPos != null) uCamPos.set((float) camPos.x, (float) camPos.y, (float) camPos.z);
+
+            Uniform uInside = shader.getUniform("u_Inside");
+            if (uInside != null) uInside.set(insideView ? 1.0F : 0.0F);
+        } catch (NullPointerException ignored) {}
     }
 
     @Override

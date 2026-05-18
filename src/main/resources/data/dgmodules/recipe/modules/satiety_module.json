@@ -1,0 +1,62 @@
+{
+  "type": "draconicevolution:fusion_crafting",
+  "catalyst": {
+    "item": "draconicevolution:item_draconic_auto_feed"
+  },
+  "ingredients": [
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:chaotic_core"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:chaotic_core"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:chaotic_energy_core"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:chaotic_energy_core"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "minecraft:enchanted_golden_apple"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "minecraft:golden_carrot"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "minecraft:golden_carrot"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:draconic_energy_core"
+      }
+    }
+  ],
+  "result": {
+    "id": "dgmodules:satiety_module",
+    "count": 1
+  },
+  "techLevel": "chaotic",
+  "totalEnergy": 1000000000
+}

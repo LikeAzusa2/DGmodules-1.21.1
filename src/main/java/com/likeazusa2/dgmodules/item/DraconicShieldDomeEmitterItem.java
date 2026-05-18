@@ -1,6 +1,8 @@
 package com.likeazusa2.dgmodules.item;
 
 import com.likeazusa2.dgmodules.entity.DomeEmitterProjectileEntity;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
@@ -9,7 +11,10 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+
+import java.util.List;
 
 public class DraconicShieldDomeEmitterItem extends Item {
 
@@ -32,5 +37,13 @@ public class DraconicShieldDomeEmitterItem extends Item {
         player.awardStat(Stats.ITEM_USED.get(this));
         stack.consume(1, player);
         return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+        tooltip.add(Component.translatable("tooltip.dgmodules.shield_dome.line1").withStyle(ChatFormatting.AQUA));
+        tooltip.add(Component.translatable("tooltip.dgmodules.shield_dome.line2").withStyle(ChatFormatting.GRAY));
+        tooltip.add(Component.translatable("tooltip.dgmodules.shield_dome.line3").withStyle(ChatFormatting.GRAY));
+        tooltip.add(Component.translatable("tooltip.dgmodules.shield_dome.line4").withStyle(ChatFormatting.DARK_RED));
     }
 }

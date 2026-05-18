@@ -21,7 +21,7 @@ public class ChaosLaserModule extends BaseModule<NoData> {
         return item;
     }
 
-    // ✅ 只能安装 1 个
+    // 只能安装 1 个
     @Override
     public int maxInstallable() {
         return 1;

@@ -31,7 +31,7 @@ public class DragonGuardModuleEntity extends ModuleEntity<NoData> {
     public static final long COST = 10_000_000L;
     private static final String TAG_LAST_GUARD_TICK = "dg_dragon_guard_tick";
 
-    // ==== CODEC / STREAM_CODEC（跟 DefaultModuleEntity 同格式：module + gridx + gridy）====
+    // CODEC / STREAM_CODEC（跟 DefaultModuleEntity 同格式：module + gridx + gridy）
     public static final Codec<DragonGuardModuleEntity> CODEC = RecordCodecBuilder.create(inst -> inst.group(
             DEModules.codec().fieldOf("module").forGetter(e -> (Module<?>) e.getModule()),
             Codec.INT.fieldOf("gridx").forGetter(ModuleEntity::getGridX),
@@ -112,10 +112,10 @@ public class DragonGuardModuleEntity extends ModuleEntity<NoData> {
         IOPStorage op = ctx.getOpStorage();
         if (op == null) return false;
 
-        // ✅ OPStorage 没有 simulate，先读余额判断
+        // OPStorage 没有 simulate，先读余额判断
         if (op.getOPStored() < cost) return false;
 
-        // ✅ 只扣一次
+        // 只扣一次
         long paid;
         if (op instanceof OPStorage ops) {
             paid = ops.modifyEnergyStored(-cost);

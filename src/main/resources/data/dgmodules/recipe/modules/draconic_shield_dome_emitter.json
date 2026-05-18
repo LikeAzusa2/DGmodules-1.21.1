@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "DED",
+    "WCW",
+    "OBO"
+  ],
+  "key": {
+    "D": { "item": "draconicevolution:draconic_energy_core" },
+    "E": { "item": "minecraft:ender_pearl" },
+    "W": { "item": "draconicevolution:wyvern_energy_core" },
+    "C": { "item": "draconicevolution:wyvern_core" },
+    "O": { "item": "minecraft:obsidian" },
+    "B": { "item": "minecraft:iron_block" }
+  },
+  "result": {
+    "id": "dgmodules:draconic_shield_dome_emitter",
+    "count": 4
+  }
+}

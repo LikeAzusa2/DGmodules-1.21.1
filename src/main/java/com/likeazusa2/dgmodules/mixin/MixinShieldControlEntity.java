@@ -52,9 +52,7 @@ public abstract class MixinShieldControlEntity {
         return false;
     }
 
-    // =========================
     // 颜色（接管点）
-    // =========================
     @Inject(method = "getShieldColour", at = @At("HEAD"), cancellable = true)
     private void dgmodules_overrideShieldColour(CallbackInfoReturnable<Integer> cir) {
 
@@ -81,7 +79,7 @@ public abstract class MixinShieldControlEntity {
         if (dgmodules$hasBooster()) cir.setReturnValue(DG$COOLDOWN_50T);
     }
 
-    // === 1) i帧期间：Incoming 可取消 ===
+    // 1) i帧期间：Incoming 可取消
     @Inject(method = "tryBlockDamage(Lnet/neoforged/neoforge/event/entity/living/LivingIncomingDamageEvent;)V",
             at = @At("HEAD"), cancellable = true)
     private void dgmodules_iframesIncoming(LivingIncomingDamageEvent event, CallbackInfo ci) {
@@ -93,7 +91,7 @@ public abstract class MixinShieldControlEntity {
         ci.cancel();
     }
 
-    // === 2) i帧期间：Pre 不可取消，只能归零 ===
+    // 2) i帧期间：Pre 不可取消，只能归零
     @Inject(method = "tryBlockDamage(Lnet/neoforged/neoforge/event/entity/living/LivingDamageEvent$Pre;)V",
             at = @At("HEAD"), cancellable = true)
     private void dgmodules_iframesPre(LivingDamageEvent.Pre event, CallbackInfo ci) {
@@ -105,14 +103,14 @@ public abstract class MixinShieldControlEntity {
         ci.cancel();
     }
 
-    // === 4) 普通伤害扣盾后点亮：onShieldHit(TAIL) ===
+    // 4) 普通伤害扣盾后点亮：onShieldHit(TAIL)
     @Inject(method = "onShieldHit", at = @At("TAIL"))
     private void dgmodules_armIframesOnHit(LivingEntity entity, boolean flag, CallbackInfo ci) {
         if (!dgmodules$hasBooster()) return;
         DGShieldIFrames.arm(entity, DG$IFRAMES);
     }
 
-    // === 5) 环境伤害扣盾后点亮：blockEnvironmentalDamage(RETURN=true) ===
+    // 5) 环境伤害扣盾后点亮：blockEnvironmentalDamage(RETURN=true)
     @Inject(method = "blockEnvironmentalDamage", at = @At("RETURN"))
     private void dgmodules_armIframesOnEnvBlock(LivingIncomingDamageEvent event, DamageSource source, CallbackInfoReturnable<Boolean> cir) {
         if (!dgmodules$hasBooster()) return;
@@ -121,9 +119,7 @@ public abstract class MixinShieldControlEntity {
         DGShieldIFrames.arm(event.getEntity(), DG$IFRAMES);
     }
 
-    // ============================================================
     // 相位护盾颜色：渐变 + 紧急闪烁
-    // ============================================================
 
     @Unique
     private int dgmodules$computePhaseShieldColor(int secondsRemaining) {

@@ -57,12 +57,12 @@ public class ChaosLaserChargingSound extends AbstractTickableSoundInstance {
             return;
         }
 
-        // ✅ 跟随玩家位置
+        // 跟随玩家位置
         this.x = player.getX();
         this.y = player.getY();
         this.z = player.getZ();
 
-        // ✅ 充能渐变（0~1）
+        // 充能渐变（0~1）
         ageTicks++;
         float p = Math.min(1f, ageTicks / (float) maxChargeTicks);
 

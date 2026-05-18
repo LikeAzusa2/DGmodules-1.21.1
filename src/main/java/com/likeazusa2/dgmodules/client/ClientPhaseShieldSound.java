@@ -28,7 +28,7 @@ public class ClientPhaseShieldSound {
     public static float ENTITY_LOOP_PITCH  = 1.2f;
 
 
-    /* ---------------- 本地玩家（HUD 驱动） ---------------- */
+    /* 本地玩家（HUD 驱动） */
 
     public static void start() {
         Minecraft mc = Minecraft.getInstance();
@@ -47,7 +47,7 @@ public class ClientPhaseShieldSound {
         }
     }
 
-    /* ---------------- 旁观者（广播包驱动） ---------------- */
+    /* 旁观者（广播包驱动） */
 
     public static void startForEntity(int entityId) {
         Minecraft mc = Minecraft.getInstance();
@@ -94,7 +94,7 @@ public class ClientPhaseShieldSound {
 
     }
 
-    /* ---------------- Sound Instances ---------------- */
+    /* Sound Instances */
 
     private static class PhaseLoopSound extends AbstractTickableSoundInstance {
 

@@ -35,7 +35,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class ChaosLaserLogic {
-    // 配置读取入口：统一从 DGConfig 取值，避免到处散落字段名
+
     private static long costNormalPerTick() {
         return DGConfig.SERVER.chaosLaserCostNormalPerTick.get();
     }
@@ -48,20 +48,15 @@ public class ChaosLaserLogic {
         return DGConfig.SERVER.chaosLaserRange.get();
     }
 
-    // 时序：3s 充能 -> 3s 普通激光 -> 3s 处决激光 -> 15s 冷却
-    private static final int CHARGE_TICKS = 60;          // 3s
-    private static final int NORMAL_TICKS = 60;          // 3s
-    private static final int EXECUTE_TICKS = 60;         // 3s
-    private static final int COOLDOWN_TICKS = 300;       // 15s
+    // 时序：3s 充能 -> 6s 普通激光 -> 3s 处决激光 -> 15s 冷却
+    private static final int CHARGE_TICKS = 60;
+    private static final int NORMAL_TICKS = 120;
+    private static final int EXECUTE_TICKS = 60;
+    static final int COOLDOWN_TICKS = 300;
 
-    long costNormal = DGConfig.SERVER.chaosLaserCostNormalPerTick.get();
-    long costExecute = DGConfig.SERVER.chaosLaserCostExecutePerTick.get();
-    double range = DGConfig.SERVER.chaosLaserRange.get();
-
-    // 音效节流：避免每 tick 广播音效导致噪音和网络浪费
+    // 音效节流
     private static final int NORMAL_LOOP_SOUND_INTERVAL = 8;
     private static final int EXECUTE_LOOP_SOUND_INTERVAL = 4;
-
 
     // 减速 65%（ADD_MULTIPLIED_TOTAL）
     private static final double SLOW_AMOUNT = -0.65;
@@ -81,54 +76,51 @@ public class ChaosLaserLogic {
         }
     }
 
-    // 运行态和冷却态
+    // 运行态和冷却态 — 使用 overworld 统一游戏时间，避免不同维度 GameTime 不一致
     private static final Map<UUID, RunState> RUNNING = new HashMap<>();
     private static final Map<UUID, Long> COOLDOWN_UNTIL = new HashMap<>();
 
-    // S2C 去重：状态不变就不重复发包
-    private record NetState(boolean firing, byte phaseId, long cooldownEnd) {}
+    // S2C 去重
+    private record NetState(boolean firing, byte phaseId, long cooldownTicks) {}
     private static final Map<UUID, NetState> LAST_SENT = new HashMap<>();
 
     private static final ResourceLocation SLOW_MOVE_ID =
             ResourceLocation.fromNamespaceAndPath("dgmodules", "chaos_laser_slow_move");
-
     private static final ResourceLocation SLOW_FLY_ID =
             ResourceLocation.fromNamespaceAndPath("dgmodules", "chaos_laser_slow_fly");
 
-
     private static final AttributeModifier SLOW_MOVE_MOD =
             new AttributeModifier(SLOW_MOVE_ID, SLOW_AMOUNT, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
-
     private static final AttributeModifier SLOW_FLY_MOD =
             new AttributeModifier(SLOW_FLY_ID, SLOW_AMOUNT, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
 
+    /** 获取 overworld 统一游戏时间，所有维度玩家使用同一时钟 */
+    private static long unifiedGameTime(ServerPlayer sp) {
+        return sp.getServer().overworld().getGameTime();
+    }
 
     public static void setFiring(ServerPlayer sp, boolean active) {
         UUID id = sp.getUUID();
         boolean running = RUNNING.containsKey(id);
 
-        // 幂等：请求状态与当前一致时直接返回
         if (active == running) return;
 
         if (active) {
-            long now = sp.serverLevel().getGameTime();
+            long now = unifiedGameTime(sp);
 
-            // 冷却中拒绝启动，并把冷却结束时间同步给客户端
             long cdUntil = COOLDOWN_UNTIL.getOrDefault(id, 0L);
             if (now < cdUntil) {
-                syncToClient(sp, false, null, cdUntil);
+                syncToClient(sp, false, -1, cdUntil - now);
                 return;
             }
 
             ItemStack staff = sp.getMainHandItem();
             if (!isChaoticStaff(staff) || !hasChaosLaserModuleInstalled(staff)) return;
 
-
-
             RUNNING.put(id, new RunState(Phase.CHARGING, now));
             applySlow(sp);
 
-            syncToClient(sp, true, Phase.CHARGING, 0L);
+            syncToClient(sp, true, 0, 0L);
 
             DGModules.LOGGER.debug("ChaosLaser start (CHARGING) player={}", sp.getGameProfile().getName());
             return;
@@ -139,8 +131,8 @@ public class ChaosLaserLogic {
 
     public static void tick(ServerPlayer sp) {
         UUID id = sp.getUUID();
+        long now = unifiedGameTime(sp);
 
-        long now = sp.serverLevel().getGameTime();
         // 自动清理过期冷却
         Long cd = COOLDOWN_UNTIL.get(id);
         if (cd != null && now >= cd) {
@@ -149,7 +141,6 @@ public class ChaosLaserLogic {
 
         RunState st = RUNNING.get(id);
         if (st == null) {
-            // 既不运行也不冷却时，清理上次网络状态缓存
             if (!COOLDOWN_UNTIL.containsKey(id)) {
                 LAST_SENT.remove(id);
             }
@@ -162,7 +153,6 @@ public class ChaosLaserLogic {
             return;
         }
 
-        // 防止减速被其他系统覆盖后失效
         applySlow(sp);
 
         int elapsed = (int) (now - st.phaseStartTick);
@@ -175,19 +165,15 @@ public class ChaosLaserLogic {
                     st.phase = Phase.NORMAL;
                     st.phaseStartTick = now;
                     DGModules.LOGGER.debug("ChaosLaser -> NORMAL player={}", sp.getGameProfile().getName());
-                    syncToClient(sp, true, Phase.NORMAL, 0L);
+                    syncToClient(sp, true, 1, 0L);
 
                     playSound(sp.serverLevel(), sp, DESounds.BEAM.get(), SoundSource.PLAYERS, 0.9f, 1.0f);
-
                 }
             }
 
             case NORMAL -> {
-                // 普通阶段：持续射线伤害 + 低频循环音效
                 if ((now % NORMAL_LOOP_SOUND_INTERVAL) == 0) {
                     playSound(sp.serverLevel(), sp, DESounds.BEAM.get(), SoundSource.HOSTILE, 0.75f, 1.0f);
-
-
                 }
                 fireBeam(sp, staff, false);
 
@@ -195,14 +181,13 @@ public class ChaosLaserLogic {
                     st.phase = Phase.EXECUTE;
                     st.phaseStartTick = now;
                     DGModules.LOGGER.debug("ChaosLaser -> EXECUTE player={}", sp.getGameProfile().getName());
-                    syncToClient(sp, true, Phase.EXECUTE, 0L);
+                    syncToClient(sp, true, 2, 0L);
 
                     playSound(sp.serverLevel(), sp, DESounds.CRYSTAL_BEAM.get(), SoundSource.HOSTILE, 0.90f, 1.40f);
                 }
             }
 
             case EXECUTE -> {
-                // 处决阶段：更高频音效 + 处决逻辑
                 if ((now % EXECUTE_LOOP_SOUND_INTERVAL) == 0) {
                     playSound(sp.serverLevel(), sp, DESounds.BEAM.get(), SoundSource.HOSTILE, 0.80f, 1.40f);
                 }
@@ -213,7 +198,6 @@ public class ChaosLaserLogic {
                 }
             }
         }
-
     }
 
     public static boolean isRunning(ServerPlayer sp) {
@@ -221,7 +205,7 @@ public class ChaosLaserLogic {
     }
 
     public static boolean isCoolingDown(ServerPlayer sp) {
-        long now = sp.serverLevel().getGameTime();
+        long now = unifiedGameTime(sp);
         return now < COOLDOWN_UNTIL.getOrDefault(sp.getUUID(), 0L);
     }
 
@@ -240,6 +224,15 @@ public class ChaosLaserLogic {
         stop(sp, "not_enough_op");
     }
 
+    /** 玩家断线时清理其所有状态，防止内存泄漏和残留状态干扰 */
+    public static void onPlayerLoggedOut(ServerPlayer sp) {
+        UUID id = sp.getUUID();
+        RUNNING.remove(id);
+        COOLDOWN_UNTIL.remove(id);
+        LAST_SENT.remove(id);
+        clearSlow(sp);
+    }
+
     private static void stop(ServerPlayer sp, String reason) {
         UUID id = sp.getUUID();
         boolean existed = RUNNING.remove(id) != null;
@@ -251,13 +244,13 @@ public class ChaosLaserLogic {
         }
 
         if (existed) {
-            // 设计约束：只要本轮激光启动过，无论什么原因停止都进入冷却。
-            long now = sp.serverLevel().getGameTime();
+            long now = unifiedGameTime(sp);
             COOLDOWN_UNTIL.put(id, now + COOLDOWN_TICKS);
         }
 
         long cdUntil = COOLDOWN_UNTIL.getOrDefault(id, 0L);
-        syncToClient(sp, false, null, cdUntil);
+        long remainingTicks = cdUntil > 0 ? Math.max(0, cdUntil - unifiedGameTime(sp)) : 0;
+        syncToClient(sp, false, -1, remainingTicks);
 
         if (existed) {
             DGModules.LOGGER.debug("ChaosLaser stop ({}) player={}", reason, sp.getGameProfile().getName());
@@ -276,10 +269,8 @@ public class ChaosLaserLogic {
         ServerLevel level = sp.serverLevel();
 
         Vec3 look = sp.getLookAngle().normalize();
-        // 起点稍微前移并下压，避免光束穿过玩家头部中心导致观感偏差
         Vec3 eye = sp.getEyePosition().add(look.scale(0.35)).add(0, -0.08, 0);
         Vec3 end = eye.add(look.scale(rangeBlocks()));
-
 
         HitResult blockHit = sp.level().clip(new ClipContext(
                 eye, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, sp
@@ -296,7 +287,6 @@ public class ChaosLaserLogic {
                 .inflate(1.0);
 
         if (execute) {
-            // 处决模式：命中射线的存活实体全部尝试击杀
             for (Entity e : level.getEntities(sp, scanBox, ent -> ent instanceof LivingEntity le && le.isAlive())) {
                 LivingEntity le = (LivingEntity) e;
                 var hitOpt = le.getBoundingBox().inflate(0.3).clip(eye, finalEnd);
@@ -304,9 +294,7 @@ public class ChaosLaserLogic {
                 kill(le, chaosDamage(sp));
             }
         } else {
-            // 普通模式：仅伤害最近命中的目标，避免一条线全清
             LivingEntity best = null;
-            Vec3 bestHit = null;
             double bestD2 = Double.MAX_VALUE;
 
             for (Entity e : level.getEntities(sp, scanBox, ent -> ent instanceof LivingEntity le && le.isAlive())) {
@@ -325,7 +313,6 @@ public class ChaosLaserLogic {
             if (best != null) {
                 float damage = (float) DGConfig.SERVER.chaosLaserNormalBaseDamage.get().doubleValue();
                 best.hurt(chaosDamage(sp), damage);
-
             }
         }
 
@@ -334,7 +321,6 @@ public class ChaosLaserLogic {
     }
 
     private static void kill(LivingEntity le, DamageSource src) {
-        // 多重兜底：尽量兼容不同实体的死亡路径
         try {
             le.hurt(src, Float.MAX_VALUE);
         } catch (Throwable ignored) {}
@@ -353,9 +339,8 @@ public class ChaosLaserLogic {
     }
 
     private static void spawnChargingParticles(ServerLevel level, ServerPlayer sp, int elapsed) {
-        // 粒子半径随充能进度收缩，表现“聚能”
-        float t = Math.min(1f, elapsed / (float) CHARGE_TICKS); // 0~1
-        double radius = 3.0 - 2.6 * t; // 3.0 -> 0.4
+        float t = Math.min(1f, elapsed / (float) CHARGE_TICKS);
+        double radius = 3.0 - 2.6 * t;
 
         DustParticleOptions dust = new DustParticleOptions(new Vector3f(1.0f, 0.0f, 0.0f), 1.4f);
 
@@ -374,7 +359,6 @@ public class ChaosLaserLogic {
     }
 
     private static void spawnBeamFx(ServerLevel level, Vec3 start, Vec3 end, boolean execute) {
-        // 普通红色，处决偏青白
         DustParticleOptions core = execute
                 ? new DustParticleOptions(new Vector3f(0.9f, 1.0f, 1.0f), 0.45f)
                 : new DustParticleOptions(new Vector3f(1.0f, 0.12f, 0.12f), 0.45f);
@@ -383,22 +367,17 @@ public class ChaosLaserLogic {
                 ? new DustParticleOptions(new Vector3f(0.85f, 0.95f, 1.0f), 0.25f)
                 : new DustParticleOptions(new Vector3f(1.0f, 0.35f, 0.35f), 0.25f);
 
-
-
-
         Vec3 d = end.subtract(start);
         double len = d.length();
         if (len < 1e-6) return;
 
         Vec3 dir = d.scale(1.0 / len);
 
-        // 为螺旋环找到稳定参考轴
         Vec3 up = Math.abs(dir.y) > 0.95 ? new Vec3(1, 0, 0) : new Vec3(0, 1, 0);
         Vec3 right = dir.cross(up).normalize();
         Vec3 forward = right.cross(dir).normalize();
 
         double radius = execute ? 0.022 : 0.025;
-
         double twist = execute ? 1.3 : 1.0;
         int points = (int) Math.min(24, Math.max(8, len * 1.6));
 
@@ -446,8 +425,6 @@ public class ChaosLaserLogic {
         return DEDamage.guardianLaser(sp.serverLevel(), sp);
     }
 
-
-
     private static boolean isChaoticStaff(ItemStack stack) {
         if (stack.isEmpty()) return false;
         return CHAOTIC_STAFF_ID.equals(BuiltInRegistries.ITEM.getKey(stack.getItem()));
@@ -457,7 +434,6 @@ public class ChaosLaserLogic {
         ModuleHost host = DECapabilities.getHost(staff);
         if (host == null) return false;
 
-        // 用模块实体里的 module 实例做判定，避免 type 单例不一致
         try {
             for (var ent : host.getModuleEntities()) {
                 var m = ent.getModule();
@@ -474,7 +450,6 @@ public class ChaosLaserLogic {
             move.addTransientModifier(SLOW_MOVE_MOD);
         }
 
-        // 玩家通常存在飞行速度属性；判空兼容其他实体/场景
         AttributeInstance fly = sp.getAttribute(Attributes.FLYING_SPEED);
         if (fly != null && fly.getModifier(SLOW_FLY_ID) == null) {
             fly.addTransientModifier(SLOW_FLY_MOD);
@@ -493,36 +468,16 @@ public class ChaosLaserLogic {
         }
     }
 
-    private static void syncToClient(ServerPlayer sp, boolean firing, Phase phase, long cooldownEndOverride) {
-        long cdEnd = cooldownEndOverride;
-        if (cdEnd == 0L) {
-            cdEnd = COOLDOWN_UNTIL.getOrDefault(sp.getUUID(), 0L);
-        }
-
-        byte phaseId = -1;
-        if (phase != null) {
-            phaseId = switch (phase) {
-                case CHARGING -> (byte) 0;
-                case NORMAL -> (byte) 1;
-                case EXECUTE -> (byte) 2;
-            };
-        }
-
-        NetState nowState = new NetState(firing, phaseId, cdEnd);
+    /**
+     * 向客户端同步激光状态。
+     * @param cooldownTicks 距离冷却结束的剩余 tick 数（倒计时），0 表示无冷却。
+     *                      客户端自行使用本地 GameTime + cooldownTicks 计算到期时刻。
+     */
+    private static void syncToClient(ServerPlayer sp, boolean firing, int phaseId, long cooldownTicks) {
+        NetState nowState = new NetState(firing, (byte) phaseId, cooldownTicks);
         NetState last = LAST_SENT.get(sp.getUUID());
         if (nowState.equals(last)) return;
         LAST_SENT.put(sp.getUUID(), nowState);
-        NetworkHandler.sendToPlayer(sp, new S2CLaserState(firing, phaseId, cdEnd));
-
+        NetworkHandler.sendToPlayer(sp, new S2CLaserState(firing, (byte) phaseId, cooldownTicks));
     }
-    private static void syncToClient(ServerPlayer sp, boolean firing, int phase, long cooldownEndTick) {
-        byte phaseId = (byte) phase;
-        long cdEnd = cooldownEndTick == 0L ? COOLDOWN_UNTIL.getOrDefault(sp.getUUID(), 0L) : cooldownEndTick;
-        NetState nowState = new NetState(firing, phaseId, cdEnd);
-        NetState last = LAST_SENT.get(sp.getUUID());
-        if (nowState.equals(last)) return;
-        LAST_SENT.put(sp.getUUID(), nowState);
-        NetworkHandler.sendToPlayer(sp, new S2CLaserState(firing, phaseId, cdEnd));
-    }
-
 }

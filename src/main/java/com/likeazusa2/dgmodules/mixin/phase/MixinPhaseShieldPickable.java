@@ -69,9 +69,7 @@ public abstract class MixinPhaseShieldPickable implements DGPhaseShieldDataAcces
         }
     }
 
-    // =========================
     // DGPhaseShieldDataAccess
-    // =========================
 
     @Override
     public boolean dgmodules$isPhaseActive() {

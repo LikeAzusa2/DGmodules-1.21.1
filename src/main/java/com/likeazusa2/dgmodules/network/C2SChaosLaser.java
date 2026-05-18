@@ -28,7 +28,7 @@ public record C2SChaosLaser(boolean active) implements CustomPacketPayload {
         ctx.enqueueWork(() -> {
             if (!(ctx.player() instanceof ServerPlayer sp)) return;
 
-            // ✅ 按下：开始持续发射；松开：停止
+            // 按下：开始持续发射；松开：停止
             ChaosLaserLogic.setFiring(sp, msg.active());
         });
     }

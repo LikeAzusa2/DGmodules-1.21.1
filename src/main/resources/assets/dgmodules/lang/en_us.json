@@ -30,8 +30,10 @@
 
   "item.dgmodules.flight_tuner_module": "Flight tuner Module",
   "module_type.draconicevolution.flight_tuner.name": "Flight tuner",
+  "module.dgmodules.flight_tuner.desc": "Adjusts flight speed, removes inertia, and can force flight mode.",
   "item_prop.draconicevolution.speed_mul": "Total Flight Speed",
   "item_prop.draconicevolution.no_inertia": "Inertia Disabled",
+  "item_prop.draconicevolution.force_flight": "Force Flight",
 
   "item.dgmodules.negative_effect_immunity_module": "Negative Effect Immunity Module",
   "module_type.draconicevolution.negative_effect_immunity.name": "Negative Effect Immunity",
@@ -57,6 +59,8 @@
   "module_type.draconicevolution.phase_shield.name": "Phase Shield",
   "key.dgmodules.phase_shield": "Phase Shield",
   "key.dgmodules.phase_shield_toggle": "Toggle Phase Shield",
+  "key.dgmodules.dimension_anchor": "Dimension Anchor",
+  "key.dgmodules.dimension_anchor_toggle": "Toggle Dimension Anchor",
   "module.dgmodules.phase_shield.desc": "Press the key to enter phase state: cancel all attacks and ignore all damage, draining massive OP.",
   "tooltip.dgmodules.phase_shield.require": "Requires: Shield Control Booster module installed in the chestpiece.",
   "tooltip.dgmodules.phase_shield.cost": "Drain: massive OP per tick (auto disables when out of power).",
@@ -64,10 +68,21 @@
   "hud.dgmodules.phase_shield.on": "Phase Shield enabled - it won't last long, get out of danger!",
   "hud.dgmodules.phase_shield.time": "Estimated time remaining: %s s",
 
+  "item.dgmodules.dimension_anchor_module": "Dimension Anchor Module",
+  "module_type.draconicevolution.dimension_anchor.name": "Dimension Anchor",
+  "module.dgmodules.dimension_anchor.desc": "Anchors nearby combat targets, preventing teleports, blinks, and escape from the battle zone.",
+  "tooltip.dgmodules.dimension_anchor.radius": "Boundary radius adjustable in the host GUI (1~128 blocks).",
+  "tooltip.dgmodules.dimension_anchor.key": "Default key: N (configurable), toggle on/off on press.",
+  "tooltip.dgmodules.dimension_anchor.cost": "Consumes massive OP while anchoring hostile targets.",
+  "tooltip.dgmodules.dimension_anchor.effect": "Suppresses flight and returns marked enemies to their last valid position.",
+
   "item.dgmodules.cataclysm_arrow_module": "Cataclysm Arrow Module",
   "module_type.draconicevolution.cataclysm_arrow.name": "Cataclysm Arrow",
   "module.dgmodules.cataclysm_arrow.desc": "Arrows trigger a violent cataclysm on impact, dealing devastating explosion damage.",
   "tooltip.dgmodules.cataclysm_arrow.cost": "Consumes 650,000 OP per launched arrow. Toggle in host config GUI.",
+  "item_prop.draconicevolution.anchor_radius": "Anchor Boundary Radius",
+  "item_prop.draconicevolution.suppress_players": "Suppress Player Flight",
+  "item_prop.draconicevolution.suppress_force": "Flight Suppression Force",
   "item_prop.draconicevolution.enabled": "Enable Cataclysm Arrow",
   "item_prop.draconicevolution.high_frequency_pierce": "Enable high-frequency armor-piercing pulses",
   "item_prop.draconicevolution.summon_fireball": "Enable Cataclysm",
@@ -83,6 +98,20 @@
   "item_prop.dgmodules.frame_breaker_enabled": "Enable Frame Breaker",
   "item_prop.dgmodules.affect_players": "Affect Players",
 
+  "item.dgmodules.wyvern_blast_space_module": "Wyvern Blast Space Module",
+  "item.dgmodules.draconic_blast_space_module": "Draconic Blast Space Module",
+  "item.dgmodules.chaotic_blast_space_module": "Chaotic Blast Space Module",
+  "module_type.draconicevolution.blast_space.name": "Blast Space",
+  "module.dgmodules.blast_space.desc": "Reach distance and attack range +%s blocks",
+
+  "item.dgmodules.satiety_module": "Satiety Module",
+  "module_type.draconicevolution.satiety.name": "Satiety",
+  "module.dgmodules.satiety.desc": "Applies a permanent Saturation effect, keeping food level and saturation fully maxed.",
+
   "item.dgmodules.draconic_shield_dome_emitter": "Draconic Shield Dome Emitter",
+  "tooltip.dgmodules.shield_dome.line1": "Deploys a 2000-point protective shield dome for 75s",
+  "tooltip.dgmodules.shield_dome.line2": "Absorbs incoming damage for nearby players",
+  "tooltip.dgmodules.shield_dome.line3": "Repels hostile mobs and intercepts projectiles",
+  "tooltip.dgmodules.shield_dome.line4": "One-time use — consumed on deployment",
   "block.dgmodules.dont_ignite": "Do Not Ignite"
 }

@@ -36,6 +36,12 @@ public class NetworkHandler {
                 C2SPhaseShieldToggle::handle
         );
 
+        registrar.playToServer(
+                C2SDimensionAnchorToggle.TYPE,
+                C2SDimensionAnchorToggle.STREAM_CODEC,
+                C2SDimensionAnchorToggle::handle
+        );
+
         registrar.playToClient(
                 S2CLaserState.TYPE,
                 S2CLaserState.STREAM_CODEC,
@@ -63,6 +69,12 @@ public class NetworkHandler {
                 S2CCataclysmShockwave.TYPE,
                 S2CCataclysmShockwave.STREAM_CODEC,
                 S2CCataclysmShockwave::handle
+        );
+
+        registrar.playToClient(
+                S2CDimensionAnchorRing.TYPE,
+                S2CDimensionAnchorRing.STREAM_CODEC,
+                S2CDimensionAnchorRing::handle
         );
 
     }

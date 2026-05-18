@@ -1,0 +1,44 @@
+{
+  "type": "draconicevolution:fusion_crafting",
+  "catalyst": {
+    "item": "draconicevolution:wyvern_core"
+  },
+  "ingredients": [
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:draconium_core"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:draconium_core"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:wyvern_energy_core"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "minecraft:piston"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "minecraft:piston"
+      }
+    }
+  ],
+  "result": {
+    "id": "dgmodules:wyvern_blast_space_module",
+    "count": 1
+  },
+  "techLevel": "wyvern",
+  "totalEnergy": 16000000
+}

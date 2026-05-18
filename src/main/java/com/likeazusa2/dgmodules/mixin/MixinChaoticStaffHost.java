@@ -22,7 +22,7 @@ public abstract class MixinChaoticStaffHost {
             ResourceLocation.fromNamespaceAndPath("draconicevolution", "chaotic_staff");
 
     /**
-     * ✅ 可选：验证 mixin 是否命中
+     * 可选：验证 mixin 是否命中
      */
     @Inject(method = "instantiateHost", at = @At("HEAD"))
     private void dgmodules_hitInstantiateHost(ItemStack stack, CallbackInfoReturnable<ModuleHostImpl> cir) {
@@ -32,7 +32,7 @@ public abstract class MixinChaoticStaffHost {
     }
 
     /**
-     * ✅ 核心：只对白名单物品（混沌权杖）放行额外模块 type
+     * 核心：只对白名单物品（混沌权杖）放行额外模块 type
      */
     @Inject(method = "instantiateHost", at = @At("RETURN"))
     private void dgmodules_allowChaosLaserModule(ItemStack stack, CallbackInfoReturnable<ModuleHostImpl> cir) {

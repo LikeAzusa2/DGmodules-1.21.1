@@ -29,7 +29,7 @@ public class ChaosLaserBeamSound extends AbstractTickableSoundInstance {
 
     private boolean done = false;
 
-    // ===== Tunables =====
+    // Tunables
     private static final float NORMAL_VOL_MIN   = 0.45f; // important: keep above "inaudible recycle" threshold
     private static final float NORMAL_VOL_MAX   = 0.85f;
     private static final float NORMAL_PITCH_MIN = 0.95f;

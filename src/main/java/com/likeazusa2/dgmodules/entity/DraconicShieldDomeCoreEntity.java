@@ -91,7 +91,7 @@ private int recoveryCooldownRemaining = 0;
             return;
         }
 
-        // ===== 生命周期：75秒后自动消失，最后2秒淡出 =====
+        // 生命周期：75秒后自动消失，最后2秒淡出
         lifeTicks++;
         int ticksLeft = MAX_LIFE_TICKS - lifeTicks;
         if (ticksLeft <= 0) {
@@ -221,7 +221,7 @@ private int recoveryCooldownRemaining = 0;
             if (dir.lengthSqr() < 1.0E-6) dir = new Vec3(1, 0, 0);
             dir = dir.normalize();
 
-            // ====== 1️⃣ 投射物直接拦截 ======
+            // 1) 投射物直接拦截
             if (isProjectile) {
                 entity.discard();
                 absorbDamageFromShield(null, 8.0F);
@@ -234,7 +234,7 @@ private int recoveryCooldownRemaining = 0;
                 continue;
             }
 
-            // ====== 2️⃣ 掉落物弹回 ======
+            // 2) 掉落物弹回
             if (isItem) {
                 Vec3 outsidePos = center.add(dir.scale(radius + 0.55D));
                 entity.teleportTo(outsidePos.x, entity.getY(), outsidePos.z);
@@ -243,7 +243,7 @@ private int recoveryCooldownRemaining = 0;
                 continue;
             }
 
-            // ====== 3️⃣ 生物/其他实体强力推开 ======
+            // 3) 生物/其他实体强力推开
 
             double dist = startDist;
             double t = Mth.clamp((dist - (radius - 1.2)) / 1.2, 0.0, 1.0);

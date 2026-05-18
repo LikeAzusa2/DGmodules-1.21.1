@@ -45,7 +45,7 @@ public class ModContent {
             DeferredRegister.create(DEModules.MODULE_KEY, DGModules.MODID);
 
 
-    // ===== 彩蛋方块：不要点燃 =====
+    // 彩蛋方块：不要点燃
     public static final DeferredHolder<net.minecraft.world.level.block.Block, DontIgniteBlock> DONT_IGNITE =
             BLOCKS.register("dont_ignite", () -> new DontIgniteBlock(net.minecraft.world.level.block.state.BlockBehaviour.Properties.of()
                     .strength(2.0F, 6.0F)
@@ -77,7 +77,7 @@ public class ModContent {
         return CHAOS_LASER_MODULE.get();
     }
 
-    // ===== Cataclysm Arrow =====
+    // Cataclysm Arrow
     public static final DeferredHolder<Item, CataclysmArrowModuleItem> CATACLYSM_ARROW_MODULE_ITEM =
             ITEMS.register("cataclysm_arrow_module",
                     () -> new CataclysmArrowModuleItem(new Item.Properties(), ModContent::getCataclysmArrowModule)
@@ -122,7 +122,7 @@ public class ModContent {
                             .updateInterval(1)
                             .build("draconic_shield_dome_core")
             );
-    // ===== Dragon Guard =====
+    // Dragon Guard
 
     public static final DeferredHolder<Item, DragonGuardModuleItem> DRAGON_GUARD_MODULE_ITEM =
             ITEMS.register("dragon_guard_module",
@@ -138,7 +138,7 @@ public class ModContent {
         return DRAGON_GUARD_MODULE.get();
     }
 
-    // ===== Phase Shield =====
+    // Phase Shield
 
     public static final DeferredHolder<Item, PhaseShieldModuleItem> PHASE_SHIELD_MODULE_ITEM =
             ITEMS.register("phase_shield_module",
@@ -154,7 +154,23 @@ public class ModContent {
         return PHASE_SHIELD_MODULE.get();
     }
 
-    // ===== Current HP Damage Modules (按当前血量追加伤害) =====
+    // Dimension Anchor
+
+    public static final DeferredHolder<Item, DimensionAnchorModuleItem> DIMENSION_ANCHOR_MODULE_ITEM =
+            ITEMS.register("dimension_anchor_module",
+                    () -> new DimensionAnchorModuleItem(new Item.Properties(), ModContent::getDimensionAnchorModule)
+            );
+
+    public static final DeferredHolder<Module<?>, DimensionAnchorModule> DIMENSION_ANCHOR_MODULE =
+            DG_MODULES.register("dimension_anchor",
+                    () -> new DimensionAnchorModule(DIMENSION_ANCHOR_MODULE_ITEM.get())
+            );
+
+    private static Module<?> getDimensionAnchorModule() {
+        return DIMENSION_ANCHOR_MODULE.get();
+    }
+
+    // Current HP Damage Modules (按当前血量追加伤害)
 
     // 1) 龙之 3%
     public static final DeferredHolder<Item, CurrentHpDamageModuleItem> WYVERN_HP_DAMAGE_MODULE_ITEM =
@@ -201,7 +217,7 @@ public class ModContent {
         return CHAOTIC_HP_DAMAGE_MODULE.get();
     }
 
-    // ===== Energy Saver Modules（宿主整体节能）=====
+    // Energy Saver Modules（宿主整体节能）
 
     public static final DeferredHolder<Item, EnergySaverModuleItem> WYVERN_ENERGY_SAVER_MODULE_ITEM =
             ITEMS.register("wyvern_energy_saver_module",
@@ -244,7 +260,7 @@ public class ModContent {
     private static Module<?> getChaoticEnergySaverModule() {
         return CHAOTIC_ENERGY_SAVER_MODULE.get();
     }
-    // ===== Flight Tuner =====
+    // Flight Tuner
 
     public static final DeferredHolder<Item, FlightTunerModuleItem> FLIGHT_TUNER_MODULE_ITEM =
             ITEMS.register("flight_tuner_module",
@@ -259,7 +275,7 @@ public class ModContent {
     private static Module<?> getFlightTunerModule() {
         return FLIGHT_TUNER_MODULE.get();
     }
-    // ===== NEGATIVE_EFFECT_IMMUNITY =====
+    // NEGATIVE_EFFECT_IMMUNITY
     public static final DeferredHolder<Item, NegativeEffectImmunityModuleItem>
             NEGATIVE_EFFECT_IMMUNITY_MODULE_ITEM =
             ITEMS.register("negative_effect_immunity_module",
@@ -279,7 +295,7 @@ public class ModContent {
         return NEGATIVE_EFFECT_IMMUNITY_MODULE.get();
     }
 
-    // ===== SHIELD_CONTROL_BOOSTER =====
+    // SHIELD_CONTROL_BOOSTER
     public static final DeferredHolder<Item, ShieldControlBoosterModuleItem>
             SHIELD_CONTROL_BOOSTER_MODULE_ITEM =
             ITEMS.register("shield_control_booster_module",
@@ -301,7 +317,7 @@ public class ModContent {
 
 
     
-    // ===== CompressedChaoticEnergy =====
+    // CompressedChaoticEnergy
 
     public static final DeferredHolder<Item, CompressedChaoticEnergyModuleItem> COMPRESSED_CHAOTIC_ENERGY_MODULE_ITEM =
             ITEMS.register("compressed_chaotic_energy_module",
@@ -318,7 +334,7 @@ public class ModContent {
     }
 
 
-    // ===== CompressedChaoticShieldRecovery =====
+    // CompressedChaoticShieldRecovery
 
     public static final DeferredHolder<Item, CompressedChaoticShieldRecoveryModuleItem> COMPRESSED_CHAOTIC_SHIELD_RECOVERY_MODULE_ITEM =
             ITEMS.register("compressed_chaotic_shield_recovery_module",
@@ -335,7 +351,7 @@ public class ModContent {
     }
 
 
-    // ===== CompressedChaoticLargeShieldCapacity =====
+    // CompressedChaoticLargeShieldCapacity
 
     public static final DeferredHolder<Item, CompressedChaoticLargeShieldCapacityModuleItem> COMPRESSED_CHAOTIC_LARGE_SHIELD_CAPACITY_MODULE_ITEM =
             ITEMS.register("compressed_chaotic_large_shield_capacity_module",
@@ -352,7 +368,7 @@ public class ModContent {
     }
 
 
-    // ===== CompressedChaoticDamage =====
+    // CompressedChaoticDamage
 
     public static final DeferredHolder<Item, CompressedChaoticDamageModuleItem> COMPRESSED_CHAOTIC_DAMAGE_MODULE_ITEM =
             ITEMS.register("compressed_chaotic_damage_module",
@@ -369,7 +385,7 @@ public class ModContent {
     }
 
 
-    // ===== CompressedChaoticSpeed =====
+    // CompressedChaoticSpeed
 
     public static final DeferredHolder<Item, CompressedChaoticSpeedModuleItem> COMPRESSED_CHAOTIC_SPEED_MODULE_ITEM =
             ITEMS.register("compressed_chaotic_speed_module",
@@ -384,7 +400,7 @@ public class ModContent {
     private static Module<?> getCompressedChaoticSpeedModule() {
         return COMPRESSED_CHAOTIC_SPEED_MODULE.get();
     }
-    // ===== Frame Breaker =====
+    // Frame Breaker
     public static final DeferredHolder<Item, FrameBreakerModuleItem> FRAME_BREAKER_MODULE_ITEM =
             ITEMS.register("frame_breaker_module",
                     () -> new FrameBreakerModuleItem(new Item.Properties(), ModContent::getFrameBreakerModule)
@@ -398,6 +414,64 @@ public class ModContent {
     private static Module<?> getFrameBreakerModule() {
         return FRAME_BREAKER_MODULE.get();
     }
+    // Satiety
+    public static final DeferredHolder<Item, SatietyModuleItem> SATIETY_MODULE_ITEM =
+            ITEMS.register("satiety_module",
+                    () -> new SatietyModuleItem(new Item.Properties(), ModContent::getSatietyModule)
+            );
+
+    public static final DeferredHolder<Module<?>, SatietyModule> SATIETY_MODULE =
+            DG_MODULES.register("satiety",
+                    () -> new SatietyModule(SATIETY_MODULE_ITEM.get())
+            );
+
+    private static Module<?> getSatietyModule() {
+        return SATIETY_MODULE.get();
+    }
+    // Blast Space — Wyvern +1
+    public static final DeferredHolder<Item, BlastSpaceModuleItem> WYVERN_BLAST_SPACE_MODULE_ITEM =
+            ITEMS.register("wyvern_blast_space_module",
+                    () -> new BlastSpaceModuleItem(new Item.Properties(), ModContent::getWyvernBlastSpaceModule)
+            );
+
+    public static final DeferredHolder<Module<?>, BlastSpaceModule> WYVERN_BLAST_SPACE_MODULE =
+            DG_MODULES.register("wyvern_blast_space",
+                    () -> new BlastSpaceModule(WYVERN_BLAST_SPACE_MODULE_ITEM.get(), TechLevel.DRACONIUM, 1)
+            );
+
+    private static Module<?> getWyvernBlastSpaceModule() {
+        return WYVERN_BLAST_SPACE_MODULE.get();
+    }
+
+    // Blast Space — Draconic +3
+    public static final DeferredHolder<Item, BlastSpaceModuleItem> DRACONIC_BLAST_SPACE_MODULE_ITEM =
+            ITEMS.register("draconic_blast_space_module",
+                    () -> new BlastSpaceModuleItem(new Item.Properties(), ModContent::getDraconicBlastSpaceModule)
+            );
+
+    public static final DeferredHolder<Module<?>, BlastSpaceModule> DRACONIC_BLAST_SPACE_MODULE =
+            DG_MODULES.register("draconic_blast_space",
+                    () -> new BlastSpaceModule(DRACONIC_BLAST_SPACE_MODULE_ITEM.get(), TechLevel.DRACONIC, 3)
+            );
+
+    private static Module<?> getDraconicBlastSpaceModule() {
+        return DRACONIC_BLAST_SPACE_MODULE.get();
+    }
+
+    // Blast Space — Chaotic +5
+    public static final DeferredHolder<Item, BlastSpaceModuleItem> CHAOTIC_BLAST_SPACE_MODULE_ITEM =
+            ITEMS.register("chaotic_blast_space_module",
+                    () -> new BlastSpaceModuleItem(new Item.Properties(), ModContent::getChaoticBlastSpaceModule)
+            );
+
+    public static final DeferredHolder<Module<?>, BlastSpaceModule> CHAOTIC_BLAST_SPACE_MODULE =
+            DG_MODULES.register("chaotic_blast_space",
+                    () -> new BlastSpaceModule(CHAOTIC_BLAST_SPACE_MODULE_ITEM.get(), TechLevel.CHAOTIC, 5)
+            );
+
+    private static Module<?> getChaoticBlastSpaceModule() {
+        return CHAOTIC_BLAST_SPACE_MODULE.get();
+    }
 public static final DeferredHolder<CreativeModeTab, CreativeModeTab> DG_MODULES_TAB =
             CREATIVE_TABS.register("dgmodules_tab", () ->
                     CreativeModeTab.builder()
@@ -408,6 +482,7 @@ public static final DeferredHolder<CreativeModeTab, CreativeModeTab> DG_MODULES_
                                 output.accept(CHAOS_LASER_MODULE_ITEM.get());
                                 output.accept(DRAGON_GUARD_MODULE_ITEM.get());
                                 output.accept(PHASE_SHIELD_MODULE_ITEM.get());
+                                output.accept(DIMENSION_ANCHOR_MODULE_ITEM.get());
                                 output.accept(FLIGHT_TUNER_MODULE_ITEM.get());
                                 output.accept(WYVERN_HP_DAMAGE_MODULE_ITEM.get());
                                 output.accept(DRACONIC_HP_DAMAGE_MODULE_ITEM.get());
@@ -424,6 +499,10 @@ public static final DeferredHolder<CreativeModeTab, CreativeModeTab> DG_MODULES_
                                 output.accept(COMPRESSED_CHAOTIC_SPEED_MODULE_ITEM.get());
                                 output.accept(CATACLYSM_ARROW_MODULE_ITEM.get());
                                 output.accept(FRAME_BREAKER_MODULE_ITEM.get());
+                                output.accept(SATIETY_MODULE_ITEM.get());
+                                output.accept(WYVERN_BLAST_SPACE_MODULE_ITEM.get());
+                                output.accept(DRACONIC_BLAST_SPACE_MODULE_ITEM.get());
+                                output.accept(CHAOTIC_BLAST_SPACE_MODULE_ITEM.get());
                                 output.accept(DRACONIC_SHIELD_DOME_EMITTER.get());
                             })
                             .build()

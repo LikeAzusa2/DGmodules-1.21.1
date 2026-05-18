@@ -507,8 +507,20 @@ public class PhaseShieldLogic {
         }
     }
 
+    /** 玩家断线时清理持久化标记，防止残留状态跨登录干扰。 */
+    public static void onPlayerLoggedOut(ServerPlayer sp) {
+        if (sp == null) return;
+        var data = sp.getPersistentData();
+        data.remove(TAG_ACTIVE);
+        data.remove(TAG_LAST_SYNC);
+        data.remove(TAG_LAST_SECONDS);
+        data.remove(TAG_LAST_HEARTBEAT_SYNC);
+        clearHealthAndMaxHealthGuard(sp);
+        // 客户端已断开，syncHealthPacket 无意义，只清理属性修饰符即可
+    }
+
     /**
-     * 相位护盾真正关心的是“宿主里有没有相位护盾模块和增幅模块”，
+     * 相位护盾真正关心的是”宿主里有没有相位护盾模块和增幅模块”，
      * 而不是宿主本身是不是原版混沌胸甲。
      */
     private static ItemStack findPhaseShieldHost(ServerPlayer sp) {

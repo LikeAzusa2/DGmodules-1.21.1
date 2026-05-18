@@ -28,12 +28,17 @@ public class ClientKeybinds {
             CATEGORY
     );
 
-
-    private static int registerCalls = 0;
+    public static final KeyMapping DIMENSION_ANCHOR_KEY = new KeyMapping(
+            "key.dgmodules.dimension_anchor_toggle",
+            InputConstants.Type.KEYSYM,
+            GLFW.GLFW_KEY_N,
+            CATEGORY
+    );
 
     @SubscribeEvent
     public static void onRegisterKeyMappings(RegisterKeyMappingsEvent event) {
         event.register(CHAOS_LASER_KEY);
         event.register(PHASE_SHIELD_KEY);
+        event.register(DIMENSION_ANCHOR_KEY);
     }
 }

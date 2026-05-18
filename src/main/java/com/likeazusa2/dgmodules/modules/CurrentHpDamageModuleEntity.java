@@ -16,7 +16,7 @@ import net.minecraft.network.codec.StreamCodec;
  */
 public class CurrentHpDamageModuleEntity extends ModuleEntity<NoData> {
 
-    // ==== CODEC / STREAM_CODEC（跟 DefaultModuleEntity 同格式：module + gridx + gridy）====
+    // CODEC / STREAM_CODEC（跟 DefaultModuleEntity 同格式：module + gridx + gridy）
     public static final Codec<CurrentHpDamageModuleEntity> CODEC = RecordCodecBuilder.create(inst -> inst.group(
             DEModules.codec().fieldOf("module").forGetter(e -> (Module<?>) e.getModule()),
             Codec.INT.fieldOf("gridx").forGetter(ModuleEntity::getGridX),
@@ -46,7 +46,7 @@ public class CurrentHpDamageModuleEntity extends ModuleEntity<NoData> {
 
     @Override
     public void tick(ModuleContext ctx) {
-        // ✅ 事件驱动模块：tick 不做任何事
+        // 事件驱动模块：tick 不做任何事
         // 伤害与扣能量逻辑放在 LivingDamageEvent.Pre 里
     }
 }

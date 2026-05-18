@@ -7,6 +7,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.fml.ModList;
 import top.theillusivec4.curios.api.CuriosApi;
@@ -17,14 +18,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class FlightTunerLogic {
 
-    // ============================================================
     // Client input mirror (from C2SFlightTunerInput)
     //
     // IMPORTANT:
     // - When the player opens an inventory/screen, the client may stop sending movement input updates.
     // - Without a timeout, the server can keep using the last input (e.g. still 'forward'),
     //   making 'No Inertia' feel wrong while a GUI is open.
-    // ============================================================
     private static final Map<UUID, InputState> INPUT = new ConcurrentHashMap<>();
     private static final int INPUT_TIMEOUT_TICKS = 8;
 
@@ -40,7 +39,6 @@ public class FlightTunerLogic {
     private static final String TAG_BASE_SPEED = "dgmodules_flight_tuner_base_speed";
     private static final float DEFAULT_FLY_SPEED = 0.05f; // MC 默认飞行速度
 
-    // ------------------------------------------------------------
     // Module lookup
     //
     // IMPORTANT (Curios support):
@@ -49,7 +47,6 @@ public class FlightTunerLogic {
     // - We follow the same strategy you used in DragonGuardEvents:
     //   1) check vanilla chest slot
     //   2) if Curios is loaded, search equipped curios for a DE ModuleHost that contains FlightTuner
-    // ------------------------------------------------------------
     private static FlightTunerModuleEntity findEntity(ServerPlayer sp) {
         // ① Vanilla armor chest slot
         ItemStack chest = sp.getItemBySlot(EquipmentSlot.CHEST);
@@ -90,8 +87,29 @@ public class FlightTunerLogic {
         @SuppressWarnings("deprecation")
         boolean flying = sp.getAbilities().flying;
 
-        // 模块不存在或不在飞行状态：恢复并清理输入缓存
-        if (ent == null || !flying) {
+        // 模块不存在：恢复速度并清理缓存
+        if (ent == null) {
+            restoreAbilityFlySpeed(sp);
+            INPUT.remove(sp.getUUID());
+            return;
+        }
+
+        // 强制保持飞行状态：检测到飞行被外部原因解除时立即重新启用。
+        // 若玩家正在主动按住下蹲键下降落地，则暂时抑制强制飞行，允许正常着陆。
+        if (ent.isForceFlight() && !flying) {
+            InputState in = INPUT.get(sp.getUUID());
+            boolean stale = in == null || (sp.tickCount - in.tick()) > INPUT_TIMEOUT_TICKS;
+            boolean sneakHeld = !stale && in.sneak();
+
+            if (!sneakHeld) {
+                applyAntiSink(sp);
+                enforceFlight(sp);
+                flying = true; // 更新本地变量供后续逻辑使用
+            }
+        }
+
+        // 不在飞行状态（模块存在但没用强制飞行且未在飞）
+        if (!flying) {
             restoreAbilityFlySpeed(sp);
             INPUT.remove(sp.getUUID());
             return;
@@ -103,9 +121,38 @@ public class FlightTunerLogic {
         // 2) 垂直速度（如果你仍然保留 verticalMul 逻辑）
         //applyVerticalBoostLikeGMUT(sp, ent.getVerticalMul());
 
-        // 3) 无惯性（方案B：输入超时归零，避免开背包还滑）
+        // 3) 无惯性：在玩家无移动输入时施加水平速度反作用力消除惯性
         if (ent.isNoInertia()) {
             applyNoInertiaLikeGMUT(sp);
+        }
+    }
+
+    /**
+     * 强制恢复飞行状态。
+     * flying 会被伤害、状态效果、维度切换等外部原因重置为 false，
+     * 此处每 tick 检测到非飞行状态后立即重新启用。
+     * 飞行能力（mayfly）由 DE 护甲宿主提供，无需额外设置。
+     */
+    @SuppressWarnings("deprecation")
+    private static void enforceFlight(ServerPlayer sp) {
+        sp.getAbilities().flying = true;
+        sp.onUpdateAbilities();
+    }
+
+    /**
+     * 防卡脚：在飞行被强制重新启用时，检测玩家脚部碰撞箱是否与下方方块交叠。
+     * 若检测到碰撞则将 Y 轴坐标向上偏移 0.35 格，避免玩家模型嵌入方块。
+     * teleportTo 会自动将位置同步到客户端。
+     */
+    private static void applyAntiSink(ServerPlayer sp) {
+        double offset = 0.35;
+
+        // 收缩碰撞箱只保留脚部区域（底部 0.02 格），检测是否嵌入方块
+        AABB feetBox = sp.getBoundingBox().contract(0.0, sp.getBbHeight() - 0.02, 0.0);
+        boolean embedded = !sp.level().noCollision(sp, feetBox);
+
+        if (embedded || sp.onGround()) {
+            sp.teleportTo(sp.getX(), sp.getY() + offset, sp.getZ());
         }
     }
 
@@ -154,7 +201,7 @@ public class FlightTunerLogic {
         }
     }
 
-    // ====== existing vertical boost (kept as-is, but uses input timeout indirectly) ======
+    // existing vertical boost (kept as-is, but uses input timeout indirectly)
     private static void applyVerticalBoostLikeGMUT(ServerPlayer sp, double verticalMul) {
         int j = 0;
 
@@ -179,7 +226,7 @@ public class FlightTunerLogic {
         sp.hurtMarked = true;
     }
 
-    // ====== No inertia (Plan B: input timeout) ======
+    // No inertia: 在玩家无移动输入时施加水平速度反作用力消除惯性
     private static void applyNoInertiaLikeGMUT(ServerPlayer sp) {
         InputState in = INPUT.get(sp.getUUID());
         boolean stale = in == null || (sp.tickCount - in.tick()) > INPUT_TIMEOUT_TICKS;
@@ -189,13 +236,14 @@ public class FlightTunerLogic {
         boolean jump = !stale && in.jump();
         boolean sneak = !stale && in.sneak();
 
-        // No movement input -> clear horizontal drift
         float dead = 0.001F;
         boolean noInput = Math.abs(zza) < dead && Math.abs(xxa) < dead && !jump && !sneak;
         if (!noInput) return;
 
         Vec3 mv = sp.getDeltaMovement();
-        sp.setDeltaMovement(0.0D, mv.y, 0.0D);
+        // 施加与当前水平速度方向相反、大小相等的反作用力来抵消惯性
+        Vec3 brakeForce = new Vec3(-mv.x, 0.0D, -mv.z);
+        sp.setDeltaMovement(mv.add(brakeForce));
         sp.hurtMarked = true;
     }
 }

@@ -29,7 +29,7 @@ public class CurrentHpDamageEvents {
 
     @SubscribeEvent
     public static void onDamagePre(LivingDamageEvent.Pre event) {
-        // ✅ 只在服务端处理（客户端这边不需要做数值修改）
+        // 只在服务端处理（客户端这边不需要做数值修改）
         if (event.getEntity().level().isClientSide) return;
 
         LivingEntity victim = event.getEntity();
@@ -39,7 +39,7 @@ public class CurrentHpDamageEvents {
         if (!(event.getSource().getEntity() instanceof LivingEntity attacker)) return;
         if (event.getSource().getDirectEntity() != attacker) return;
 
-        // ✅ 通常只有玩家用模块化武器，这里限制成玩家，避免怪物拿武器触发导致奇怪行为
+        // 通常只有玩家用模块化武器，这里限制成玩家，避免怪物拿武器触发导致奇怪行为
         if (!(attacker instanceof ServerPlayer sp)) return;
 
         ItemStack weapon = sp.getMainHandItem();
@@ -50,7 +50,7 @@ public class CurrentHpDamageEvents {
         try (ModuleHost host = DECapabilities.getHost(weapon)) {
             if (host == null) return;
 
-            // ✅ 按共享 type 抓实体，然后从 module 实例读 percent
+            // 按共享 type 抓实体，然后从 module 实例读 percent
             for (var ent : host.getEntitiesByType(CurrentHpDamageModuleType.INSTANCE).toList()) {
                 Module<?> m = ent.getModule();
                 if (m instanceof CurrentHpDamageModule chd) {
@@ -83,10 +83,10 @@ public class CurrentHpDamageEvents {
         float extra = Math.min(extraWanted, payable);
         if (extra <= 0) return;
 
-        // ✅ 扣能：向上取整，避免 0.1 点伤害只扣 200 OP 被白嫖
+        // 扣能：向上取整，避免 0.1 点伤害只扣 200 OP 被白嫖
         long cost = (long) Math.ceil(extra) * OP_PER_DAMAGE;
 
-        // ✅ 参考你 ChaosLaserModuleEntity 的写法：
+        // 参考你 ChaosLaserModuleEntity 的写法：
         //    DE 工具能量口有时 extractOP 返回 0，因此优先 OPStorage.modifyEnergyStored(-cost)
         long paid;
         if (op instanceof OPStorage ops) {
@@ -110,7 +110,7 @@ public class CurrentHpDamageEvents {
      *  - 这样比直接去 CapabilityOP.ITEM 更贴合 DE 对模块化物品的能量实现
      */
     private static IOPStorage getWeaponOpStorage(ItemStack weapon, ServerPlayer sp) {
-        // ✅ 用主手槽位创建上下文（与你 DragonGuardEvents 的方式一致）
+        // 用主手槽位创建上下文（与你 DragonGuardEvents 的方式一致）
         var ctx = new com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext(
                 weapon, sp, EquipmentSlot.MAINHAND
         );

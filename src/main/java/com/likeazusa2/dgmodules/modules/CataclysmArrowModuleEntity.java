@@ -103,7 +103,7 @@ public class CataclysmArrowModuleEntity extends ModuleEntity<NoData> {
         return enabled.orElseGet(() -> {
             BooleanProperty p = new BooleanProperty(
                     "enabled",
-                    Component.translatable("dgmodules.module.cataclysm_arrow.enabled"),
+                    Component.translatable("item_prop.draconicevolution.enabled"),
                     true
             );
             p.setChangeListener(stack -> {
@@ -119,7 +119,7 @@ public class CataclysmArrowModuleEntity extends ModuleEntity<NoData> {
         return highFrequencyPierce.orElseGet(() -> {
             BooleanProperty p = new BooleanProperty(
                     "high_frequency_pierce",
-                    Component.translatable("dgmodules.module.cataclysm_arrow.high_frequency_pierce"),
+                    Component.translatable("item_prop.draconicevolution.high_frequency_pierce"),
                     true
             );
             p.setChangeListener(stack -> {
@@ -135,7 +135,7 @@ public class CataclysmArrowModuleEntity extends ModuleEntity<NoData> {
         return summonFireball.orElseGet(() -> {
             BooleanProperty p = new BooleanProperty(
                     "summon_fireball",
-                    Component.translatable("dgmodules.module.cataclysm_arrow.summon_fireball"),
+                    Component.translatable("item_prop.draconicevolution.summon_fireball"),
                     true
             );
             p.setChangeListener(stack -> {

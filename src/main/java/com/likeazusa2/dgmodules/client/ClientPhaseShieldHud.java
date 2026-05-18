@@ -21,7 +21,7 @@ public class ClientPhaseShieldHud {
         active = isActive;
         secondsRemaining = Math.max(0, seconds);
 
-        // ✅ 单例循环音效控制（不刷屏、不在原地留音）
+        // 单例循环音效控制（不刷屏、不在原地留音）
         if (active) {
             ClientPhaseShieldSound.start();
         } else {
@@ -44,21 +44,21 @@ public class ClientPhaseShieldHud {
 
         boolean emergency = secondsRemaining <= 5;
 
-        // ===== 第一行 =====
+        // 第一行
         Component line1 = Component.translatable("hud.dgmodules.phase_shield.on")
                 .withStyle(emergency ? ChatFormatting.RED : ChatFormatting.AQUA, ChatFormatting.BOLD);
         gg.drawString(font, line1, x, y, 0xFFFFFF, true);
 
-        // ===== 第二行：预计剩余时间 =====
+        // 第二行：预计剩余时间
         Component line2 = Component.translatable("hud.dgmodules.phase_shield.time", secondsRemaining)
                 .withStyle(emergency ? ChatFormatting.RED : ChatFormatting.YELLOW);
         gg.drawString(font, line2, x, y + 10, 0xFFFFFF, true);
 
-        // ===== 反应堆风格渐变条（动态）=====
+        // 反应堆风格渐变条（动态）
         float softMax = 30f;
         float p = Math.min(1f, secondsRemaining / softMax); // 1=满，0=空
 
-        // ✅ 修复：不要用 event.getPartialTick()（它是 DeltaTracker），直接用系统时间做脉冲
+        // 修复：不要用 event.getPartialTick()（它是 DeltaTracker），直接用系统时间做脉冲
         float t = (System.currentTimeMillis() / 1000.0f) * (emergency ? 6.0f : 2.6f);
         float pulse = 0.75f + 0.25f * (float) Math.sin(t);
 

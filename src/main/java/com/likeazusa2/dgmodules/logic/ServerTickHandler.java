@@ -13,5 +13,6 @@ public class ServerTickHandler {
         ChaosLaserLogic.tick(sp);
         FlightTunerLogic.tick(sp);
         PhaseShieldLogic.tick(sp);
+        DimensionAnchorLogic.tick(sp);
     }
 }

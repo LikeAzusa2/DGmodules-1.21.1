@@ -17,7 +17,7 @@ import net.minecraft.server.level.ServerPlayer;
 
 public class ChaosLaserModuleEntity extends ModuleEntity<NoData> {
 
-    // ==== CODEC / STREAM_CODEC（跟 DefaultModuleEntity 同格式：module + gridx + gridy）====
+    // CODEC / STREAM_CODEC（跟 DefaultModuleEntity 同格式：module + gridx + gridy）
     public static final Codec<ChaosLaserModuleEntity> CODEC = RecordCodecBuilder.create(inst -> inst.group(
             DEModules.codec().fieldOf("module").forGetter(e -> (Module<?>) e.getModule()),
             Codec.INT.fieldOf("gridx").forGetter(ModuleEntity::getGridX),
@@ -68,7 +68,7 @@ public class ChaosLaserModuleEntity extends ModuleEntity<NoData> {
 
         long paid;
 
-        // ✅ DE 的工具能量口通常是 receive-only，extractOP 会是 0
+        // DE 的工具能量口通常是 receive-only，extractOP 会是 0
         //    模块内部消耗用 OPStorage.modifyEnergyStored(-cost)
         if (op instanceof com.brandon3055.brandonscore.api.power.OPStorage ops) {
             // modifyEnergyStored 返回实际变化的绝对值（通常就是 cost）

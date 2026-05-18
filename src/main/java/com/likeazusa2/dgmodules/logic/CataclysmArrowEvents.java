@@ -57,7 +57,7 @@ public class CataclysmArrowEvents {
     private static final Map<UUID, WaveState> ACTIVE_WAVES = new HashMap<>();
     private static final Map<ResourceKey<Level>, Long> LAST_PROCESSED_TICK_BY_DIMENSION = new HashMap<>();
 
-    private record PierceDotState(ResourceKey<Level> levelKey, float damagePerTick, long expireGameTime, UUID attackerId, long nextTick) {}
+    private record PierceDotState(ResourceKey<Level> levelKey, int tick, long expireGameTime, UUID attackerId) {}
     private record WaveState(ResourceKey<Level> levelKey, Vec3 center, int tick, UUID shooterId) {}
 
     @SubscribeEvent
@@ -143,14 +143,22 @@ public class CataclysmArrowEvents {
         }
     }
 
+    /**
+     * 高频穿甲脉冲 — 30 tick 递增当前生命值百分比伤害。
+     * 第 1 次: 当前 HP × 0.8%，此后每次递增当前 HP × 0.2%。
+     * 伤害来源归属为玩家（自定义 + 虚空双重伤害）。
+     */
     private static void processDots(ServerLevel currentLevel, long now) {
         Iterator<Map.Entry<UUID, PierceDotState>> it = ACTIVE_DOTS.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry<UUID, PierceDotState> e = it.next();
             PierceDotState state = e.getValue();
 
-            if (!state.levelKey().equals(currentLevel.dimension()) || now < state.nextTick() || now > state.expireGameTime()) {
-                if (now > state.expireGameTime()) it.remove();
+            if (!state.levelKey().equals(currentLevel.dimension())) {
+                continue;
+            }
+            if (now > state.expireGameTime()) {
+                it.remove();
                 continue;
             }
 
@@ -161,14 +169,27 @@ public class CataclysmArrowEvents {
             }
 
             Entity attacker = state.attackerId() == null ? null : currentLevel.getEntity(state.attackerId());
-            DamageSource pierceSource = new DamageSource(getDamageType(currentLevel, DGDamageTypes.CATACLYSM_PIERCE), attacker, attacker);
-            target.invulnerableTime = 0;
-            target.hurt(pierceSource, state.damagePerTick());
+            float currentHp = target.getHealth();
+            float pct = 0.008F + 0.002F * state.tick(); // 0.8% + tick×0.2%
+            float damage = Math.max(0.01F, currentHp * pct);
 
-            if (now + 1 > state.expireGameTime()) {
+            // 玩家来源的虚空伤害
+            Holder<DamageType> outOfWorld = currentLevel.registryAccess()
+                    .registryOrThrow(Registries.DAMAGE_TYPE)
+                    .getHolderOrThrow(net.minecraft.world.damagesource.DamageTypes.FELL_OUT_OF_WORLD);
+            DamageSource voidSource = new DamageSource(outOfWorld, attacker, attacker);
+            target.invulnerableTime = 0;
+            target.hurt(voidSource, damage * 0.5F);
+
+            // 玩家来源的自定义穿甲伤害
+            DamageSource pierceSource = new DamageSource(getDamageType(currentLevel, DGDamageTypes.CATACLYSM_PIERCE), attacker, attacker);
+            target.hurt(pierceSource, damage * 0.5F);
+
+            int nextTick = state.tick() + 1;
+            if (nextTick >= 30 || state.expireGameTime() <= now) {
                 it.remove();
             } else {
-                e.setValue(new PierceDotState(state.levelKey(), state.damagePerTick(), state.expireGameTime(), state.attackerId(), now + 1));
+                e.setValue(new PierceDotState(state.levelKey(), nextTick, state.expireGameTime(), state.attackerId()));
             }
         }
     }
@@ -253,19 +274,25 @@ public class CataclysmArrowEvents {
 
             if (target.hurt(source, damage)) {
                 target.setRemainingFireTicks((int) Math.max(target.getRemainingFireTicks(), (2 + Math.ceil(2.5 * t)) * 20));
+
+                // 额外附加玩家来源的虚空伤害
+                Holder<DamageType> outOfWorld = level.registryAccess()
+                        .registryOrThrow(Registries.DAMAGE_TYPE)
+                        .getHolderOrThrow(net.minecraft.world.damagesource.DamageTypes.FELL_OUT_OF_WORLD);
+                DamageSource voidSource = new DamageSource(outOfWorld, shooter, shooter);
+                target.invulnerableTime = 0;
+                target.hurt(voidSource, Math.max(2.0F, target.getMaxHealth() * 0.03F));
             }
 
             if (pierceEnabled) {
-                float perTick = (float) Math.max(0.0D, arrowDamage * DGConfig.SERVER.cataclysmPierceBaseMultiplier.get());
                 long now = level.getGameTime();
                 ACTIVE_DOTS.put(
                         target.getUUID(),
                         new PierceDotState(
                                 level.dimension(),
-                                perTick,
-                                now + DGConfig.SERVER.cataclysmPierceDurationTicks.get(),
-                                shooter == null ? null : shooter.getUUID(),
-                                now + 1
+                                0,
+                                now + 32,
+                                shooter == null ? null : shooter.getUUID()
                         )
                 );
             }
@@ -312,6 +339,16 @@ public class CataclysmArrowEvents {
             double nz = delta.z / rx;
             if (nx * nx + ny * ny + nz * nz > 1.0) continue;
 
+            // 额外附加玩家来源虚空伤害（setHealth 无法归属，先做伤害）
+            if (attacker != null) {
+                Holder<DamageType> outOfWorld = level.registryAccess()
+                        .registryOrThrow(Registries.DAMAGE_TYPE)
+                        .getHolderOrThrow(net.minecraft.world.damagesource.DamageTypes.FELL_OUT_OF_WORLD);
+                DamageSource voidSource = new DamageSource(outOfWorld, attacker, attacker);
+                target.invulnerableTime = 0;
+                target.hurt(voidSource, target.getMaxHealth() * 0.01F);
+            }
+            // setHealth: 最大生命 ×5%（从 10% 下调）
             float hpCut = target.getMaxHealth() * DGConfig.SERVER.cataclysmCollapseHpRatio.get().floatValue();
             target.setHealth(Math.max(0.0f, target.getHealth() - hpCut));
         }

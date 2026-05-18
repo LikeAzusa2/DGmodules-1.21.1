@@ -9,7 +9,6 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-
 /**
  * Server -> Client laser state sync.
  *
@@ -19,12 +18,11 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
  *  2 = EXECUTE
  * -1 = NONE/STOPPED
  *
- * cooldownEndTick: server level gameTime tick when cooldown ends (0 if none).
- *
- * 注册方式（示例，放到你的 NetworkHandler/register 里）：
- *   registrar.playToClient(TYPE, STREAM_CODEC, S2CLaserState::handle);
+ * cooldownTicks: 距离冷却结束的剩余 tick 数（倒计时值），0 表示无冷却。
+ * 客户端使用“本地 GameTime + cooldownTicks”计算冷却到期时刻，
+ * 不再依赖服务端绝对 GameTime，避免跨维度时间不同步问题。
  */
-public record S2CLaserState(boolean firing, byte phase, long cooldownEndTick) implements CustomPacketPayload {
+public record S2CLaserState(boolean firing, byte phase, long cooldownTicks) implements CustomPacketPayload {
 
     public static final Type<S2CLaserState> TYPE =
             new Type<>(ResourceLocation.fromNamespaceAndPath(DGModules.MODID, "s2c_laser_state"));
@@ -33,7 +31,7 @@ public record S2CLaserState(boolean firing, byte phase, long cooldownEndTick) im
             StreamCodec.composite(
                     ByteBufCodecs.BOOL, S2CLaserState::firing,
                     ByteBufCodecs.BYTE, S2CLaserState::phase,
-                    ByteBufCodecs.VAR_LONG, S2CLaserState::cooldownEndTick,
+                    ByteBufCodecs.VAR_LONG, S2CLaserState::cooldownTicks,
                     S2CLaserState::new
             );
 
@@ -44,8 +42,7 @@ public record S2CLaserState(boolean firing, byte phase, long cooldownEndTick) im
 
     public static void handle(S2CLaserState msg, IPayloadContext ctx) {
         ctx.enqueueWork(() -> {
-            // 客户端线程：用服务器权威状态驱动声音开/关与相位切换
-            ClientTickHandler.applyServerState(msg.firing(), msg.phase(), msg.cooldownEndTick());
+            ClientTickHandler.applyServerState(msg.firing(), msg.phase(), msg.cooldownTicks());
         });
     }
 }
